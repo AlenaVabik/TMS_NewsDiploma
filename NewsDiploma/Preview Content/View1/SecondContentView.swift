@@ -7,18 +7,19 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct SecondContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
+            Image(systemName: "newspaper")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("SECOND VIEW")
         }
         .padding()
+        .background(Color.red.opacity(0.5))
     }
 }
 
 #Preview {
-    ContentView()
+    SecondContentView()
 }
