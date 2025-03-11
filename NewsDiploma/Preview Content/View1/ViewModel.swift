@@ -33,6 +33,7 @@ final class ViewModel: ObservableObject, Sendable {
     }
     
     func loadNews() async {
+        guard !ProcessInfo.isPreviewMode else { return }
         do {
             let response: APIResponseModel = try await apiManager.sendRequest(
                 typeResult: APIResponseModel.self,

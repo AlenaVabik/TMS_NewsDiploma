@@ -13,10 +13,12 @@ struct ItemCard: View {
     var body: some View {
         HStack {
             Text(item.title)
-                .frame(width: 170, height: 20, alignment: .leading)
                 .font(.caption)
-            Text(item.pubDate)
+            Text(item.pubDate, format: .dateTime.year().month().day().hour().minute())
         }
-        .frame(width: 165, height: 50, alignment: .leading)
     }
+}
+
+#Preview {
+//    ItemCard(item: <#ArticleModel#>)
 }

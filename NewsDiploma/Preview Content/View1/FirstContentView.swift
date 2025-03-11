@@ -13,9 +13,6 @@ enum Category: String, CaseIterable {
 
 struct FirstContentView: View {
     @StateObject var viewModel: ViewModel
-//    @State private var isSheetPresented = false
-//    @State private var selectedCategory: Category
-
     
     var body: some View {
         VStack {
@@ -49,9 +46,7 @@ struct FirstContentView: View {
         .background(Color.green)
         .padding()
         .task {
-            Task {
-                await viewModel.loadNews()
-            }
+            await viewModel.loadNews()
         }
     }
 
@@ -59,5 +54,6 @@ struct FirstContentView: View {
 
 #Preview {
     let viewModel = ViewModel()
-    FirstContentView(viewModel: viewModel)
+    viewModel.items = []
+    return FirstContentView(viewModel: viewModel)
 }
