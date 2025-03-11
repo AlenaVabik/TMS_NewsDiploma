@@ -6,11 +6,31 @@
 //
 
 import SwiftUI
+import Combine
 
 final class ViewModel: ObservableObject, Sendable {
-    var items: [ArticleModel] = []
+    @Published var items: [ArticleModel] = []
+    @Published var selectedCategory: Category = .allCategories
+    @Published var isSheetPresented: Bool = false
+    
     let apiManager = APIManager()
-
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init() {
+        $selectedCategory
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] category in
+                guard let self = self else { return }
+                Task {
+                    if category == .allCategories {
+                        await self.loadNews()
+                    } else {
+                        await self.loadNewsByCategory(category: category)
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
     
     func loadNews() async {
         do {
@@ -18,7 +38,7 @@ final class ViewModel: ObservableObject, Sendable {
                 typeResult: [ArticleModel].self,
                 endpoint: .latest(q: nil, category: nil, country: nil)
             )
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.items = loadedItems
             }
         } catch {
@@ -32,23 +52,11 @@ final class ViewModel: ObservableObject, Sendable {
                 typeResult: [ArticleModel].self,
                 endpoint: .latest(q: nil, category: category?.rawValue, country: nil)
             )
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.items = loadedItems
             }
         } catch {
             print("Ошибка загрузки по категории: \(error)")
         }
     }
-
-//    func loadDataByKeyWord() async throws -> [ArticleModel] {
-//        return try await apiManager.sendRequest(typeResult: [ArticleModel].self, endpoint: .latest(q: "health", category: nil, country: nil))
-//    }
-//
-//    func loadDataByCategory() async throws -> [ArticleModel] {
-//        return try await apiManager.sendRequest(typeResult: [ArticleModel].self, endpoint: .latest(q: nil, category: "news", country: nil))
-//    }
-//    
-//    func loadDataByCountry() async throws -> [ArticleModel] {
-//        return try await apiManager.sendRequest(typeResult: [ArticleModel].self, endpoint: .latest(q: nil, category: nil, country: "Belarus"))
-//    }
 }

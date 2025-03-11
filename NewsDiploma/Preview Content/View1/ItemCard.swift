@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ItemCard: View {
-
-    @State var item: ArticleModel
+    var item: ArticleModel
     
     var body: some View {
         HStack {

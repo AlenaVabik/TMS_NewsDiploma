@@ -25,8 +25,8 @@ extension JsonService: TargetType {
     
     var path: String {
         switch self {
-        case .latest(q: let q, category: let category, country: let country):
-            return "latest"
+        case .latest:
+            "latest"
         }
     }
     
