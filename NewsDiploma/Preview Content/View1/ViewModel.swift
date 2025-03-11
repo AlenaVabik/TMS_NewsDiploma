@@ -34,29 +34,31 @@ final class ViewModel: ObservableObject, Sendable {
     
     func loadNews() async {
         do {
-            let loadedItems = try await apiManager.sendRequest(
-                typeResult: [ArticleModel].self,
+            let response: APIResponseModel = try await apiManager.sendRequest(
+                typeResult: APIResponseModel.self,
                 endpoint: .latest(q: nil, category: nil, country: nil)
             )
             await MainActor.run {
-                self.items = loadedItems
+                self.items = response.results
             }
         } catch {
             print("Ошибка загрузки новостей: \(error)")
         }
     }
+
     
     func loadNewsByCategory(category: Category?) async {
         do {
-            let loadedItems = try await apiManager.sendRequest(
-                typeResult: [ArticleModel].self,
+            let response: APIResponseModel = try await apiManager.sendRequest(
+                typeResult: APIResponseModel.self,
                 endpoint: .latest(q: nil, category: category?.rawValue, country: nil)
             )
             await MainActor.run {
-                self.items = loadedItems
+                self.items = response.results
             }
         } catch {
             print("Ошибка загрузки по категории: \(error)")
         }
     }
+
 }

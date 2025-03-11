@@ -11,7 +11,7 @@ import Foundation
 
 struct APIResponseModel: Decodable {
     let status: String
-    let totalResults: Int
+    let totalResults: Int?
     let results: [ArticleModel]
 }
 
@@ -22,11 +22,11 @@ struct ArticleModel: Decodable {
     let keywords: [String]?
     let creator: [String]?
     let videoUrl: String?
-    let description: String
+    let description: String?
     let content: String?
     let pubDate: String
     let pubDateTZ: String
-    let imageUrl: String
+    let imageUrl: String?
     let sourceId: String
     let sourcePriority: Int
     let sourceName: String
