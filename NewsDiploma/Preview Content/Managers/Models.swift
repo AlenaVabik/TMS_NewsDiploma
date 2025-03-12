@@ -80,4 +80,46 @@ struct ArticleModel: Decodable {
         self.category = try container.decode([String].self, forKey: ArticleModel.CodingKeys.category)
         
     }
+    
+    init(
+            articleId: String,
+            title: String,
+            link: String,
+            keywords: [String]? = nil,
+            creator: [String]? = nil,
+            videoUrl: String? = nil,
+            description: String? = nil,
+            content: String? = nil,
+            pubDate: Date,
+            pubDateTZ: String,
+            imageUrl: String? = nil,
+            sourceId: String,
+            sourcePriority: Int,
+            sourceName: String,
+            sourceUrl: String? = nil,
+            sourceIcon: String? = nil,
+            language: String,
+            country: [String],
+            category: [String]
+        ) {
+            self.articleId = articleId
+            self.title = title
+            self.link = link
+            self.keywords = keywords
+            self.creator = creator
+            self.videoUrl = videoUrl
+            self.description = description
+            self.content = content
+            self.pubDate = pubDate
+            self.pubDateTZ = pubDateTZ
+            self.imageUrl = imageUrl
+            self.sourceId = sourceId
+            self.sourcePriority = sourcePriority
+            self.sourceName = sourceName
+            self.sourceUrl = sourceUrl
+            self.sourceIcon = sourceIcon
+            self.language = language
+            self.country = country
+            self.category = category
+        }
 }

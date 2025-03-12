@@ -15,16 +15,19 @@ final class ViewModel: ObservableObject, Sendable {
     
     let apiManager = APIManager()
     private var cancellables: Set<AnyCancellable> = []
+     
+    let testData = TestData()
     
     init() {
         $selectedCategory
             .receive(on: DispatchQueue.main)
             .sink { [weak self] category in
-                guard let self = self else { return }
+                guard let self else { return }
                 Task {
-                    if category == .allCategories {
+                    switch category {
+                    case .allCategories:
                         await self.loadNews()
-                    } else {
+                    default:
                         await self.loadNewsByCategory(category: category)
                     }
                 }
@@ -50,12 +53,16 @@ final class ViewModel: ObservableObject, Sendable {
     
     func loadNewsByCategory(category: Category?) async {
         do {
-            let response: APIResponseModel = try await apiManager.sendRequest(
-                typeResult: APIResponseModel.self,
-                endpoint: .latest(q: nil, category: category?.rawValue, country: nil)
-            )
-            await MainActor.run {
-                self.items = response.results
+            if ProcessInfo.isPreviewMode {
+                self.items = testData.modelArray
+            } else {
+                let response: APIResponseModel = try await apiManager.sendRequest(
+                    typeResult: APIResponseModel.self,
+                    endpoint: .latest(q: nil, category: category?.rawValue, country: nil)
+                )
+                await MainActor.run {
+                    self.items = response.results
+                }
             }
         } catch {
             print("Ошибка загрузки по категории: \(error)")

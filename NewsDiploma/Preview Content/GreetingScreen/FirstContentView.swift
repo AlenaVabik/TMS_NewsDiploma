@@ -13,11 +13,25 @@ enum Category: String, CaseIterable {
 
 struct FirstContentView: View {
     @StateObject var viewModel: ViewModel
+    var greeting: String {
+        let currentHour = Calendar.current.component(.hour, from: Date())
+        
+        switch currentHour {
+        case 5..<12:
+            return "Good morning with fresh news"
+        case 12..<17:
+            return "Good afternoon with fresh news"
+        case 17..<24:
+            return "Good evening with fresh news"
+        default:
+            return "Good night with fresh news"
+        }
+    }
     
     var body: some View {
         VStack {
-            Label("God morning with fresh news", systemImage: "newspaper")
-                .font(.title)
+            Label(greeting, systemImage: "newspaper")
+                .font(.custom("AvenirNext-Bold", size: 20))
                 .padding(.top, 10)
 
 
@@ -54,6 +68,10 @@ struct FirstContentView: View {
 
 #Preview {
     let viewModel = ViewModel()
-    viewModel.items = []
-    return FirstContentView(viewModel: viewModel)
+    let testData = TestData()
+
+    if ProcessInfo.isPreviewMode {
+        viewModel.items = testData.modelArray
+    }
+     return FirstContentView(viewModel: viewModel)
 }

@@ -1,0 +1,33 @@
+//
+//  ItemCard.swift
+//  NewsDiploma
+//
+//  Created by Alena  on 10.03.25.
+//
+
+import SwiftUI
+
+struct ItemCard: View {
+    var item: ArticleModel
+    
+    var body: some View {
+        VStack {
+            Text(item.title)
+                .font(.caption)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(item.pubDate, format: .dateTime.year().month().day())
+                .font(.caption2)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .foregroundColor(.gray)
+        }
+    }
+}
+
+#Preview {
+    let viewModel = ViewModel()
+    let testData = TestData()
+
+    if ProcessInfo.isPreviewMode {
+        ItemCard(item: testData.articleModel)
+    }
+}
