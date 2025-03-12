@@ -11,7 +11,9 @@ import SwiftUI
 struct NewsDiplomaApp: App {
     var body: some Scene {
         WindowGroup {
-            FirstContentView(viewModel: ViewModel())
+            NavigationStack {
+                FirstContentView(viewModel: ViewModel())
+            }
         }
     }
 }

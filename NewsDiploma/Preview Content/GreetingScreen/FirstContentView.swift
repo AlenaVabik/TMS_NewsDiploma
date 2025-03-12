@@ -34,17 +34,28 @@ struct FirstContentView: View {
                 .font(.custom("AvenirNext-Bold", size: 20))
                 .padding(.top, 10)
 
-
+            SearchView()
+            
             Picker("Choose the category", selection: $viewModel.selectedCategory) {
                 ForEach(Category.allCases, id: \.self) { category in
                     Text(category.rawValue.capitalized)
                 }
             }
-           .pickerStyle(MenuPickerStyle())
-
+            .pickerStyle(MenuPickerStyle())
+            .background(Color.orange)
+            
+           
             
             List(viewModel.items, id: \.articleId) { item  in
-                ItemCard(item: item)
+                NavigationLink(
+                    destination: DetailsNewsView(
+                        title: item.title,
+                        description: item.description ?? "No description",
+                        imageUrl: item.imageUrl
+                    )
+                ) {
+                    ItemCard(item: item)
+                }
             }
             .scrollContentBackground(.hidden)
             .background(Color.secondary)
@@ -57,7 +68,7 @@ struct FirstContentView: View {
                 SecondContentView()
             }
         }
-        .background(Color.green)
+        .background(Color.red)
         .padding()
         .task {
             await viewModel.loadNews()
@@ -69,9 +80,12 @@ struct FirstContentView: View {
 #Preview {
     let viewModel = ViewModel()
     let testData = TestData()
-
-    if ProcessInfo.isPreviewMode {
-        viewModel.items = testData.modelArray
+    
+    NavigationStack {
+        if ProcessInfo.isPreviewMode {
+            viewModel.items = testData.modelArray
+        }
+         return FirstContentView(viewModel: viewModel)
     }
-     return FirstContentView(viewModel: viewModel)
+    
 }
