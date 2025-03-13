@@ -10,9 +10,9 @@ import Moya
 
 class APIManager {
     //MARK: Request Moya
-    let provider = MoyaProvider<JsonService>()
+    static let provider = MoyaProvider<JsonService>()
     
-    func sendRequest<T: Decodable>(typeResult: T.Type, endpoint: JsonService) async throws -> T {
+    static func sendRequest<T: Decodable>(typeResult: T.Type, endpoint: JsonService) async throws -> T {
        try await withCheckedThrowingContinuation { continuation in
             provider.request(endpoint) { result in
                 switch result {

@@ -25,9 +25,8 @@ struct ItemCard: View {
 
 #Preview {
     let viewModel = ViewModel()
-    let testData = TestData()
 
     if ProcessInfo.isPreviewMode {
-        ItemCard(item: testData.articleModel)
+        ItemCard(item: TestData.articleModel)
     }
 }

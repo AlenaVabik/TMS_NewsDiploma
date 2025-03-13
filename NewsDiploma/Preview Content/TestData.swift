@@ -8,7 +8,7 @@
 import SwiftUI
 
 final class TestData {
-    let modelArray = [
+    static let modelArray = [
                 ArticleModel(
                     articleId: "123",
                     title: "title: Homo antecessor had “a very modern-like face, very similar to the face we our species.",
@@ -263,7 +263,7 @@ final class TestData {
                 )
             ]
     
-    let articleModel = ArticleModel(
+    static let articleModel = ArticleModel(
         articleId: "343",
         title: "Found at the Sima del Elefante site in the Atapuerca Mountains, the fossils make up a partial skull comprised of the left side of the face of an adult hominin.",
         link: "https://example.com",

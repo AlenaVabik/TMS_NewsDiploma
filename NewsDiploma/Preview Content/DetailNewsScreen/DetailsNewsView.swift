@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct DetailsNewsView: View {
     let title: String
@@ -15,42 +16,26 @@ struct DetailsNewsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                
                 Text(title)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom, 10)
                 
-                if let imageUrl, let url = URL(string: imageUrl) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
+                if let imageUrl {
+                    KFImage(URL(string: imageUrl))
+                        .placeholder {
                             ProgressView()
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFit()
-                        case .failure:
-                            Image(systemName: "photo")
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(.gray)
-                        default:
-                            EmptyView()
                         }
-                    }
+                        .resizable()
+                        .scaledToFit()
                 } else {
                     Image(systemName: "photo")
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.gray)
                 }
-                
+
                 Text(description)
-                    .font(.body)
-                    .padding(.top, 10)
-                
-                Spacer()
             }
             .padding()
         }

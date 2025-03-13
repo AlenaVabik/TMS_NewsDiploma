@@ -13,10 +13,22 @@ final class ViewModel: ObservableObject, Sendable {
     @Published var selectedCategory: Category = .allCategories
     @Published var isSheetPresented: Bool = false
     
-    let apiManager = APIManager()
     private var cancellables: Set<AnyCancellable> = []
-     
-    let testData = TestData()
+         
+    var greeting: String {
+        let currentHour = Calendar.current.component(.hour, from: Date())
+        
+        switch currentHour {
+        case 5..<12:
+            return "Good morning with fresh news"
+        case 12..<17:
+            return "Good afternoon with fresh news"
+        case 17..<24:
+            return "Good evening with fresh news"
+        default:
+            return "Good night with fresh news"
+        }
+    }
     
     init() {
         $selectedCategory
@@ -38,7 +50,7 @@ final class ViewModel: ObservableObject, Sendable {
     func loadNews() async {
         guard !ProcessInfo.isPreviewMode else { return }
         do {
-            let response: APIResponseModel = try await apiManager.sendRequest(
+            let response: APIResponseModel = try await APIManager.sendRequest(
                 typeResult: APIResponseModel.self,
                 endpoint: .latest(q: nil, category: nil, country: nil)
             )
@@ -54,9 +66,9 @@ final class ViewModel: ObservableObject, Sendable {
     func loadNewsByCategory(category: Category?) async {
         do {
             if ProcessInfo.isPreviewMode {
-                self.items = testData.modelArray
+                self.items = TestData.modelArray
             } else {
-                let response: APIResponseModel = try await apiManager.sendRequest(
+                let response: APIResponseModel = try await APIManager.sendRequest(
                     typeResult: APIResponseModel.self,
                     endpoint: .latest(q: nil, category: category?.rawValue, country: nil)
                 )
