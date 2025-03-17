@@ -9,7 +9,6 @@ import Moya
 
 
 class APIManager {
-    //MARK: Request Moya
     static let provider = MoyaProvider<JsonService>()
     
     static func sendRequest<T: Decodable>(typeResult: T.Type, endpoint: JsonService) async throws -> T {

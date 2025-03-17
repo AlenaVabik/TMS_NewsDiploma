@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 enum Category: String, CaseIterable {
     case allCategories, business, education, sports, tourism, world
@@ -34,24 +35,24 @@ struct FirstContentView: View {
             List(viewModel.items, id: \.articleId) { item  in
                 NavigationLink(
                     destination: DetailsNewsView(
-                        title: item.title,
-                        description: item.description ?? "No description",
-                        imageUrl: item.imageUrl
+                        viewModel: viewModel,
+                        item: item
                     )
                 ) {
                     ItemCard(item: item)
                 }
             }
+            
             .scrollContentBackground(.hidden)
             .background(Color.secondary)
 
-            Button("Push button") {
-                viewModel.isSheetPresented = true
-            }
-            .padding(5)
-            .sheet(isPresented: $viewModel.isSheetPresented) {
-                SecondContentView()
-            }
+//            Button("Push button") {
+//                viewModel.isSheetPresented = true
+//            }
+//            .padding(5)
+//            .sheet(isPresented: $viewModel.isSheetPresented) {
+//                SecondContentView()
+//            }
         }
         .background(Color.red)
         .padding()

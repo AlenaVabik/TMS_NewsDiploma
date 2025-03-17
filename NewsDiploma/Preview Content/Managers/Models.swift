@@ -30,8 +30,8 @@ struct ArticleModel: Decodable {
     let sourceId: String
     let sourcePriority: Int
     let sourceName: String
-    let sourceUrl: String?
-    let sourceIcon: String?
+    let sourceUrl: String
+    let sourceIcon: String
     let language: String
     let country: [String]
     let category: [String]
@@ -73,8 +73,8 @@ struct ArticleModel: Decodable {
         self.sourceId = try container.decode(String.self, forKey: ArticleModel.CodingKeys.sourceId)
         self.sourcePriority = try container.decode(Int.self, forKey: ArticleModel.CodingKeys.sourcePriority)
         self.sourceName = try container.decode(String.self, forKey: ArticleModel.CodingKeys.sourceName)
-        self.sourceUrl = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.sourceUrl)
-        self.sourceIcon = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.sourceIcon)
+        self.sourceUrl = try container.decode(String.self, forKey: ArticleModel.CodingKeys.sourceUrl)
+        self.sourceIcon = try container.decode(String.self, forKey: ArticleModel.CodingKeys.sourceIcon)
         self.language = try container.decode(String.self, forKey: ArticleModel.CodingKeys.language)
         self.country = try container.decode([String].self, forKey: ArticleModel.CodingKeys.country)
         self.category = try container.decode([String].self, forKey: ArticleModel.CodingKeys.category)
@@ -96,8 +96,8 @@ struct ArticleModel: Decodable {
             sourceId: String,
             sourcePriority: Int,
             sourceName: String,
-            sourceUrl: String? = nil,
-            sourceIcon: String? = nil,
+            sourceUrl: String,
+            sourceIcon: String,
             language: String,
             country: [String],
             category: [String]

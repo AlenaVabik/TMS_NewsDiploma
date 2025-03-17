@@ -11,8 +11,11 @@ import Combine
 final class ViewModel: ObservableObject, Sendable {
     @Published var items: [ArticleModel] = []
     @Published var selectedCategory: Category = .allCategories
-    @Published var isSheetPresented: Bool = false
-    
+//    @Published var isSheetPresented: Bool = false
+    @Published var isSourceViewPresented: Bool = false
+    @Published var isfullScreenPresented: Bool = false
+    @Published var isLoading: Bool = true
+
     private var cancellables: Set<AnyCancellable> = []
          
     var greeting: String {
