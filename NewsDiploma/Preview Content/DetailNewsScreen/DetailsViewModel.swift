@@ -7,8 +7,9 @@
 import SwiftUI
 import Combine
 
-final class DetailsViewModel: ObservableObject, Sendable {
-    @Published var items: [ArticleModel] = []
+final class DetailsViewModel: ObservableObject {
+    let sourceViewModel = SourceViewModel()
+    var items: [ArticleModel] = []
     @Published var isfullScreenPresented: Bool = false
 
 }

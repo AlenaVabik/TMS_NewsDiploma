@@ -10,7 +10,7 @@ import Kingfisher
 
 struct DetailsNewsView: View {
     @StateObject var detailsViewModel: DetailsViewModel
-    @StateObject var sourceViewModel = SourceViewModel()
+    
     
     let item: ArticleModel
     
@@ -59,7 +59,7 @@ struct DetailsNewsView: View {
             }
             .fullScreenCover(isPresented: $detailsViewModel.isfullScreenPresented) {
                 NavigationStack {
-                    SourceView(sourceViewModel: sourceViewModel)
+                    SourceView(sourceViewModel: detailsViewModel.sourceViewModel)
                 }
             }
 //            .sheet(isPresented: $viewModel.isSourceViewPresented) {
