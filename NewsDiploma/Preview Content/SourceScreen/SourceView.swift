@@ -9,31 +9,27 @@ import SwiftUI
 
 struct SourceView: View {
     @Environment(\.dismiss) private var dismiss
-    
-    let sourceName: String
-    let sourceUrl: String
-    let sourceIcon: String
-    let pubDate: Date
+    @StateObject var sourceViewModel: SourceViewModel
     
     var body: some View {
         VStack(spacing: 20) {
-            if sourceIcon.isEmpty {
+            if sourceViewModel.sourceIcon.isEmpty {
                 Image(systemName: "newspaper.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
             } else {
-                Image(systemName: sourceIcon)
+                Image(systemName: sourceViewModel.sourceIcon)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
             }
             
-            Text(sourceName)
+            Text(sourceViewModel.sourceName)
                 .font(.title)
                 .fontWeight(.bold)
             
-            if let url = URL(string: sourceUrl) {
+            if let url = URL(string: sourceViewModel.sourceUrl) {
                 Link("Go to source", destination: url)
                     .font(.headline)
                     .foregroundColor(.blue)
@@ -68,13 +64,13 @@ struct SourceView: View {
     }
     
     private var formattedPubDate: String {
-        DateFormatter.articleDateFormatter.string(from: pubDate)
+        DateFormatter.articleDateFormatter.string(from: sourceViewModel.pubDate)
     }
 }
 
 
 #Preview {
     NavigationStack {
-        SourceView(sourceName: "CNN", sourceUrl: "", sourceIcon: "", pubDate: Date())
+        SourceView(sourceViewModel: SourceViewModel())
     }
 }

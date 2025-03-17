@@ -35,7 +35,7 @@ struct FirstContentView: View {
             List(viewModel.items, id: \.articleId) { item  in
                 NavigationLink(
                     destination: DetailsNewsView(
-                        viewModel: viewModel,
+                        detailsViewModel: DetailsViewModel(),
                         item: item
                     )
                 ) {

@@ -13,7 +13,6 @@ final class ViewModel: ObservableObject, Sendable {
     @Published var selectedCategory: Category = .allCategories
 //    @Published var isSheetPresented: Bool = false
     @Published var isSourceViewPresented: Bool = false
-    @Published var isfullScreenPresented: Bool = false
     @Published var isLoading: Bool = true
 
     private var cancellables: Set<AnyCancellable> = []

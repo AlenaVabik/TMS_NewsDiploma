@@ -9,11 +9,13 @@ import SwiftUI
 import Kingfisher
 
 struct DetailsNewsView: View {
-    @StateObject var viewModel: ViewModel
-
+    @StateObject var detailsViewModel: DetailsViewModel
+    @StateObject var sourceViewModel = SourceViewModel()
+    
     let item: ArticleModel
     
     var body: some View {
+  
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 Text(item.title)
@@ -42,7 +44,7 @@ struct DetailsNewsView: View {
                 }
                 
                 Button(action: {
-                    viewModel.isfullScreenPresented = true
+                    detailsViewModel.isfullScreenPresented = true
                     
                     print("Кнопка 'Source information' нажата.")
                 }) {
@@ -55,9 +57,9 @@ struct DetailsNewsView: View {
                         .cornerRadius(10)
                 }
             }
-            .fullScreenCover(isPresented: $viewModel.isfullScreenPresented) {
+            .fullScreenCover(isPresented: $detailsViewModel.isfullScreenPresented) {
                 NavigationStack {
-                    SourceView(sourceName: item.sourceName, sourceUrl: item.sourceUrl, sourceIcon: item.sourceIcon, pubDate: item.pubDate)
+                    SourceView(sourceViewModel: sourceViewModel)
                 }
             }
 //            .sheet(isPresented: $viewModel.isSourceViewPresented) {
@@ -65,33 +67,34 @@ struct DetailsNewsView: View {
 //                    SourceView(sourceName: item.sourceName, sourceUrl: item.sourceUrl, sourceIcon: item.sourceIcon, pubDate: item.pubDate)
 //                }
 //            }
-            .padding()
+            .padding(.horizontal)
         }
         .navigationTitle("Details")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    // Логика перевода
+                    print("Кнопка перевода нажата")
+                }) {
+                    Image(systemName: "translate")
+                        .font(.title2)
+                        .foregroundColor(.red)
+                }
+            }
+        }
     }
 }
 
 
 
 #Preview {
-    let viewModel = ViewModel()
+    let viewModel = DetailsViewModel()
     
     NavigationStack {
         if ProcessInfo.isPreviewMode {
             viewModel.items = TestData.modelArray
         }
-    return DetailsNewsView(viewModel: viewModel, item: viewModel.items.first!)
+    return DetailsNewsView(detailsViewModel: viewModel, item: viewModel.items.first!)
     }
     
 }
-//#Preview {
-//    let viewModel = ViewModel()
-//    
-//    NavigationStack {
-//        if ProcessInfo.isPreviewMode {
-//            viewModel.items = TestData.modelArray
-//        }
-//         return FirstContentView(viewModel: viewModel)
-//    }
-//    
-//}
