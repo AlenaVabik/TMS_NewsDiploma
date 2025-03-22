@@ -7,18 +7,25 @@
 
 import SwiftUI
 import Kingfisher
+import Combine
 
 struct DetailsNewsView: View {
-    @StateObject var detailsViewModel: DetailsViewModel
-    
-    
+    @StateObject private var detailsViewModel: DetailsViewModel
     let item: ArticleModel
+    
+    init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
+        _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
+        self.item = item
+    }
+    
     
     var body: some View {
   
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text(item.title)
+                Text(detailsViewModel.isTranslated
+                     ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
+                     : item.title)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom, 10)
@@ -37,11 +44,10 @@ struct DetailsNewsView: View {
                         .foregroundColor(.gray)
                 }
                 
-                if let description = item.description {
-                    Text(description)
-                } else {
-                    Text("No description")
-                }
+                Text(detailsViewModel.isTranslated
+                     ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
+                     : (item.description ?? "Нет описания"))
+                .padding(.top, 10)
                 
                 Button(action: {
                     detailsViewModel.isfullScreenPresented = true
@@ -73,8 +79,14 @@ struct DetailsNewsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    // Логика перевода
-                    print("Кнопка перевода нажата")
+                    Task {
+                        if detailsViewModel.isTranslated {
+                            detailsViewModel.toggleTranslation()
+                            // возврат на оригинал
+                        } else {
+                            await detailsViewModel.translateContent() // перевод на русский
+                        }
+                    }
                 }) {
                     Image(systemName: "translate")
                         .font(.title2)
@@ -88,13 +100,13 @@ struct DetailsNewsView: View {
 
 
 #Preview {
-    let viewModel = DetailsViewModel()
-    
-    NavigationStack {
-        if ProcessInfo.isPreviewMode {
-            viewModel.items = TestData.modelArray
-        }
-    return DetailsNewsView(detailsViewModel: viewModel, item: viewModel.items.first!)
-    }
+//    let viewModel = DetailsViewModel(item: ArticleModel(from: <#any Decoder#>), translatedArticleId: PassthroughSubject<ArticleModel, Never>)
+//    
+//    NavigationStack {
+//        if ProcessInfo.isPreviewMode {
+//            viewModel.items = TestData.modelArray
+//        }
+//    return DetailsNewsView(detailsViewModel: viewModel, item: viewModel.items.first!)
+//    }
     
 }

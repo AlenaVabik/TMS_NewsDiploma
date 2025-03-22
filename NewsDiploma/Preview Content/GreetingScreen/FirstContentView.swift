@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import Combine
 
 enum Category: String, CaseIterable {
     case allCategories, business, education, sports, tourism, world
@@ -14,6 +15,7 @@ enum Category: String, CaseIterable {
 
 struct FirstContentView: View {
     @StateObject var viewModel: ViewModel
+    
 
     var body: some View {
         VStack {
@@ -32,10 +34,13 @@ struct FirstContentView: View {
             .background(Color.orange)
            
             
-            List(viewModel.items, id: \.articleId) { item  in
+            List(viewModel.items, id: \.articleId) { item in
                 NavigationLink(
                     destination: DetailsNewsView(
-                        detailsViewModel: DetailsViewModel(),
+                        detailsViewModel: DetailsViewModel(
+                            item: item,
+                            translatedArticleId: viewModel.translatedArticleId
+                        ),
                         item: item
                     )
                 ) {
@@ -64,13 +69,13 @@ struct FirstContentView: View {
 }
 
 #Preview {
-    let viewModel = ViewModel()
-    
-    NavigationStack {
-        if ProcessInfo.isPreviewMode {
-            viewModel.items = TestData.modelArray
-        }
-         return FirstContentView(viewModel: viewModel)
-    }
-    
+//    let viewModel = ViewModel()
+//    
+//    NavigationStack {
+//        if ProcessInfo.isPreviewMode {
+//            viewModel.items = TestData.modelArray
+//        }
+//         return FirstContentView(viewModel: viewModel)
+//    }
+//    
 }

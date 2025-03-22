@@ -36,6 +36,10 @@ struct ArticleModel: Decodable {
     let country: [String]
     let category: [String]
     
+    let translatedDescription: String?
+    let translatedTitle: String?
+
+    
     enum CodingKeys: String, CodingKey {
         case articleId = "article_id"
         case title, link, keywords, creator
@@ -47,7 +51,7 @@ struct ArticleModel: Decodable {
         case sourceName = "source_name"
         case sourceUrl = "source_url"
         case sourceIcon = "source_icon"
-        case language, country, category
+        case language, country, category, translatedDescription, translatedTitle
     }
     
     init(from decoder: any Decoder) throws {
@@ -78,7 +82,8 @@ struct ArticleModel: Decodable {
         self.language = try container.decode(String.self, forKey: ArticleModel.CodingKeys.language)
         self.country = try container.decode([String].self, forKey: ArticleModel.CodingKeys.country)
         self.category = try container.decode([String].self, forKey: ArticleModel.CodingKeys.category)
-        
+        self.translatedTitle = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.translatedTitle)
+        self.translatedDescription = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.translatedDescription)
     }
     
     init(
@@ -100,7 +105,9 @@ struct ArticleModel: Decodable {
             sourceIcon: String,
             language: String,
             country: [String],
-            category: [String]
+            category: [String],
+            translatedDescription: String?,
+            translatedTitle: String?
         ) {
             self.articleId = articleId
             self.title = title
@@ -121,5 +128,7 @@ struct ArticleModel: Decodable {
             self.language = language
             self.country = country
             self.category = category
+            self.translatedDescription = translatedDescription
+            self.translatedTitle = translatedTitle
         }
 }
