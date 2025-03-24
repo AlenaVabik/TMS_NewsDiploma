@@ -15,7 +15,7 @@ struct ItemCard: View {
             Text(item.title)
                 .font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(item.pubDate, format: .dateTime.year().month().day())
+            Text(item.pubDate ?? Date(), format: .dateTime.year().month().day())
                 .font(.caption2)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .foregroundColor(.gray)

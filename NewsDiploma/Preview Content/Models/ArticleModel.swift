@@ -24,7 +24,7 @@ struct ArticleModel: Decodable {
     let videoUrl: String?
     let description: String?
     let content: String?
-    let pubDate: Date
+    let pubDate: Date?
     let pubDateTZ: String
     let imageUrl: String?
     let sourceId: String

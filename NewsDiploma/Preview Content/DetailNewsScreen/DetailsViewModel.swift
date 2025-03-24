@@ -8,7 +8,6 @@ import SwiftUI
 import Combine
 
 final class DetailsViewModel: ObservableObject {
-    let sourceViewModel = SourceViewModel()
     var item: ArticleModel
     var translatedArticleId: PassthroughSubject<ArticleModel, Never>
     private var cancellables = Set<AnyCancellable>()
@@ -21,7 +20,6 @@ final class DetailsViewModel: ObservableObject {
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
         self.translatedArticleId = translatedArticleId
-        
         translatedArticleId
             .sink { [weak self] article in
                 self?.item = article
@@ -57,10 +55,8 @@ final class DetailsViewModel: ObservableObject {
                 self.translatedTitle = translatedTitle
                 self.isTranslated = true
             }
-        } catch let error as NSError {
-            print("Ошибка перевода: \(error.localizedDescription) (\(error.code))")
-        } catch {
-            print("Непредвиденная ошибка перевода: \(error)")
+        } catch let error {
+            print("Ошибка перевода: \(error.localizedDescription)")
         }
     }
     

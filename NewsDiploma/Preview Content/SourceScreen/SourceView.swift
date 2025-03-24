@@ -6,31 +6,36 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SourceView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject var sourceViewModel: SourceViewModel
+    
+    let articleModel: ArticleModel
     
     var body: some View {
         VStack(spacing: 20) {
-            if sourceViewModel.sourceIcon.isEmpty {
+            if articleModel.sourceIcon.isEmpty {
                 Image(systemName: "newspaper.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
             } else {
-                Image(systemName: sourceViewModel.sourceIcon)
+                KFImage(URL(string: articleModel.sourceIcon))
+                    .placeholder {
+                        ProgressView()
+                    }
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
             }
             
-            Text(sourceViewModel.sourceName)
+            Text(articleModel.sourceName)
                 .font(.title)
                 .fontWeight(.bold)
             
-            if let url = URL(string: sourceViewModel.sourceUrl) {
-                Link("Go to source", destination: url)
+            if let url = URL(string: articleModel.sourceUrl) {
+                Link("Go to source link", destination: url)
                     .font(.headline)
                     .foregroundColor(.blue)
             } else {
@@ -42,7 +47,7 @@ struct SourceView: View {
             Text("Request date: \(formattedPubDate)")
                 .font(.caption)
                 .frame(maxWidth: .infinity)
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
             
             Button {
                 dismiss()
@@ -54,23 +59,34 @@ struct SourceView: View {
                     .cornerRadius(10)
             }
         }
-    
-        
         .padding()
-        
         .navigationTitle("Source of information")
-        
-        .background(Color.secondary)
+        .background(
+            AngularGradient(
+                gradient: Gradient(colors: [Color.white, Color.brown, Color.white]),
+                center: .center
+            )
+        )
+        .cornerRadius(10)
+        .padding()
     }
     
     private var formattedPubDate: String {
-        DateFormatter.articleDateFormatter.string(from: sourceViewModel.pubDate)
+        if let pubDate = articleModel.pubDate {
+            return DateFormatter.articleDateFormatter.string(from: pubDate)
+        } else {
+            return "No date available"
+        }
     }
 }
 
 
 #Preview {
+    let viewModel = ViewModel()
     NavigationStack {
-        SourceView(sourceViewModel: SourceViewModel())
+        if ProcessInfo.isPreviewMode {
+            viewModel.items = TestData.modelArray
+        }
+         return SourceView(articleModel: TestData.articleModel)
     }
 }

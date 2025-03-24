@@ -8,10 +8,9 @@
 import SwiftUI
 import Combine
 
-final class ViewModel: ObservableObject, Sendable {
+final class ViewModel: ObservableObject {
     @Published var items: [ArticleModel] = []
     @Published var selectedCategory: Category = .allCategories
-//    @Published var isSheetPresented: Bool = false
     @Published var isSourceViewPresented: Bool = false
     @Published var isLoading: Bool = true
     @Published var detVM: DetailsViewModel

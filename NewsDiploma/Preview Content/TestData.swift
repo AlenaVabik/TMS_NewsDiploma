@@ -310,6 +310,9 @@ final class TestData {
         translatedDescription: "",
         translatedTitle: "aits"
     )
+    
+//    static let articleModel = DetailsViewModel(item: TestData.modelArray, translatedArticleId: TestData.modelArray.)
+
 }
 
 

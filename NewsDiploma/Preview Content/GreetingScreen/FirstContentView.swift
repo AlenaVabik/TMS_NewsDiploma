@@ -14,16 +14,17 @@ enum Category: String, CaseIterable {
 }
 
 struct FirstContentView: View {
-    @StateObject var viewModel: ViewModel
+    @ObservedObject private var viewModel: ViewModel
     
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         VStack {
             Label(viewModel.greeting, systemImage: "newspaper")
                 .font(.custom("AvenirNext-Bold", size: 20))
                 .padding(.top, 10)
-
-            SearchView()
             
             Picker("Choose the category", selection: $viewModel.selectedCategory) {
                 ForEach(Category.allCases, id: \.self) { category in
@@ -77,5 +78,5 @@ struct FirstContentView: View {
 //        }
 //         return FirstContentView(viewModel: viewModel)
 //    }
-//    
+    
 }

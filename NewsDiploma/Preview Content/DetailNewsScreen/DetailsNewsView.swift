@@ -46,7 +46,7 @@ struct DetailsNewsView: View {
                 
                 Text(detailsViewModel.isTranslated
                      ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
-                     : (item.description ?? "Нет описания"))
+                     : (item.description ?? "No description"))
                 .padding(.top, 10)
                 
                 Button(action: {
@@ -63,16 +63,14 @@ struct DetailsNewsView: View {
                         .cornerRadius(10)
                 }
             }
-            .fullScreenCover(isPresented: $detailsViewModel.isfullScreenPresented) {
+            .sheet(isPresented: $detailsViewModel.isfullScreenPresented) {
                 NavigationStack {
-                    SourceView(sourceViewModel: detailsViewModel.sourceViewModel)
+                    SourceView(articleModel: item)
+                        .presentationDetents([.large, .medium])
+                        .interactiveDismissDisabled()
                 }
             }
-//            .sheet(isPresented: $viewModel.isSourceViewPresented) {
-//                NavigationStack {
-//                    SourceView(sourceName: item.sourceName, sourceUrl: item.sourceUrl, sourceIcon: item.sourceIcon, pubDate: item.pubDate)
-//                }
-//            }
+
             .padding(.horizontal)
         }
         .navigationTitle("Details")
@@ -97,16 +95,11 @@ struct DetailsNewsView: View {
     }
 }
 
-
-
 #Preview {
-//    let viewModel = DetailsViewModel(item: ArticleModel(from: <#any Decoder#>), translatedArticleId: PassthroughSubject<ArticleModel, Never>)
-//    
-//    NavigationStack {
-//        if ProcessInfo.isPreviewMode {
-//            viewModel.items = TestData.modelArray
-//        }
-//    return DetailsNewsView(detailsViewModel: viewModel, item: viewModel.items.first!)
+//    let viewModel = ViewModel()
+//
+//    if ProcessInfo.isPreviewMode {
+//        viewModel.items = TestData.modelArray
 //    }
-    
+//    DetailsNewsView(detailsViewModel: TestData.articleModel, item: TestData.articleModel)
 }
