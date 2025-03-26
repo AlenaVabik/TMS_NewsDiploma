@@ -55,9 +55,7 @@ final class DetailsViewModel: ObservableObject {
                 self.translatedTitle = translatedTitle
                 self.isTranslated = true
             }
-        } catch let error {
-            print("Ошибка перевода: \(error.localizedDescription)")
-        }
+        } catch { print("Ошибка перевода: \(error.localizedDescription)") }
     }
     
 

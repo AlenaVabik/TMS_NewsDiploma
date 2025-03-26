@@ -8,20 +8,17 @@
 import SwiftUI
 
 struct NewsTabBarView: View {
-    @StateObject var viewModel = ViewModel()
-    @StateObject private var searchViewModel = SearchViewModel()
-
     var body: some View {
         TabView {
             NavigationStack {
-                FirstContentView(viewModel: viewModel)
+                FirstContentView()
             }
                 .tabItem {
                     Image(systemName: "house")
                     Text("Top News")
                 }
             NavigationStack {
-                SearchView(searchViewModel: searchViewModel)
+                SearchView()
             }
                 .tabItem {
                     Image(systemName: "magnifyingglass")

@@ -14,11 +14,7 @@ enum Category: String, CaseIterable {
 }
 
 struct FirstContentView: View {
-    @ObservedObject private var viewModel: ViewModel
-    
-    init(viewModel: ViewModel) {
-        self.viewModel = viewModel
-    }
+    @StateObject private var viewModel = ViewModel()
 
     var body: some View {
         VStack {
