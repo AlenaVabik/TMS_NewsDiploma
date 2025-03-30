@@ -12,6 +12,7 @@ import Combine
 struct DetailsNewsView: View {
     @StateObject private var detailsViewModel: DetailsViewModel
     let item: ArticleModel
+    @State private var showBlur = false
     
     init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
         _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
@@ -20,54 +21,68 @@ struct DetailsNewsView: View {
     
     
     var body: some View {
-  
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(detailsViewModel.isTranslated
-                     ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
-                     : item.title)
+        ZStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(detailsViewModel.isTranslated
+                         ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
+                         : item.title)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom, 10)
-                
-                if let imageUrl = item.imageUrl {
-                    KFImage(URL(string: imageUrl))
-                        .placeholder {
-                            ProgressView()
-                        }
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.gray)
-                }
-                
-                Text(detailsViewModel.isTranslated
-                     ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
-                     : (item.description ?? "No description"))
-                .padding(.top, 10)
-                
-                Button(action: {
-                    detailsViewModel.isfullScreenPresented = true
                     
-                    print("Кнопка 'Source information' нажата.")
-                }) {
-                    Text("Source information")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                    if let imageUrl = item.imageUrl {
+                        KFImage(URL(string: imageUrl))
+                            .placeholder {
+                                ProgressView()
+                            }
+                            .resizable()
+                            .scaledToFit()
+                    } else {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.gray)
+                    }
+                    
+                    Text(detailsViewModel.isTranslated
+                         ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
+                         : (item.description ?? "No description"))
+                    .padding(.top, 10)
+                    
+                    Button(action: {
+                        detailsViewModel.isfullScreenPresented = true
+                        
+                        print("Кнопка 'Source information' нажата.")
+                    }) {
+                        Text("Source information")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                }
+                .blur(radius: showBlur ? 10 : 0)
+                .animation(.easeInOut, value: showBlur)
+                
+                // Опционально: затемнение
+                if showBlur {
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
                 }
             }
-            .sheet(isPresented: $detailsViewModel.isfullScreenPresented) {
+            .sheet(isPresented: $detailsViewModel.isfullScreenPresented, onDismiss: {
+                showBlur = false
+            }) {
                 NavigationStack {
                     SourceView(articleModel: item)
                         .presentationDetents([.large, .medium])
                         .interactiveDismissDisabled()
+                        .onAppear {
+                            showBlur = true
+                        }
                 }
             }
 
