@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @StateObject var searchViewModel = SearchViewModel()
+    @StateObject private var searchViewModel = SearchViewModel()
     
     var body: some View {
         VStack {
@@ -46,10 +46,8 @@ struct SearchView: View {
 }
 
 #Preview {
-    let searchViewModel = SearchViewModel()
-
     if ProcessInfo.isPreviewMode {
         ItemScreenCard(item: TestData.articleModel)
     }
-    SearchView(searchViewModel: searchViewModel)
+    SearchView()
 }

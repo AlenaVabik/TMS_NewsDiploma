@@ -10,7 +10,12 @@ import Kingfisher
 import Combine
 
 enum Category: String, CaseIterable {
-    case allCategories, business, education, sports, tourism, world
+    case allCategories
+    case business
+    case education
+    case sports
+    case tourism
+    case world
 }
 
 struct FirstContentView: View {
@@ -22,31 +27,38 @@ struct FirstContentView: View {
                 .font(.custom("AvenirNext-Bold", size: 20))
                 .padding(.top, 10)
             
-            Picker("Choose the category", selection: $viewModel.selectedCategory) {
+            Text(DateFormatter.firstScreenDateFormatter.string(from: Date()))
+                 .font(.caption)
+                 .foregroundColor(.white)
+            
+            TabView(selection: $viewModel.selectedCategory) {
                 ForEach(Category.allCases, id: \.self) { category in
-                    Text(category.rawValue.capitalized)
+                    VStack {
+                        Text(category.rawValue.capitalized)
+                            .font(.headline)
+                            .padding()
+                        List(viewModel.items, id: \.articleId) { item in
+                            NavigationLink(
+                                destination: DetailsNewsView(
+                                    detailsViewModel: DetailsViewModel(
+                                        item: item,
+                                        translatedArticleId: viewModel.translatedArticleId
+                                    ),
+                                    item: item
+                                )
+                            ) {
+                                ItemCard(item: item)
+                            }
+                        }
+                        
+                        .scrollContentBackground(.hidden)
+                        .background(Color.secondary)
+                    }
+                    .tag(category)
                 }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .background(Color.orange)
-           
-            
-            List(viewModel.items, id: \.articleId) { item in
-                NavigationLink(
-                    destination: DetailsNewsView(
-                        detailsViewModel: DetailsViewModel(
-                            item: item,
-                            translatedArticleId: viewModel.translatedArticleId
-                        ),
-                        item: item
-                    )
-                ) {
-                    ItemCard(item: item)
-                }
-            }
-            
-            .scrollContentBackground(.hidden)
-            .background(Color.secondary)
+           }
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
 
 //            Button("Push button") {
 //                viewModel.isSheetPresented = true
@@ -66,6 +78,7 @@ struct FirstContentView: View {
 }
 
 #Preview {
+    FirstContentView()
 //    let viewModel = ViewModel()
 //    
 //    NavigationStack {
