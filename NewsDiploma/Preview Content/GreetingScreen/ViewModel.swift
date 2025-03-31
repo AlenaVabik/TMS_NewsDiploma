@@ -8,14 +8,18 @@
 import SwiftUI
 import Combine
 
-final class ViewModel: ObservableObject, Sendable {
+final class ViewModel: ObservableObject {
     @Published var items: [ArticleModel] = []
     @Published var selectedCategory: Category = .allCategories
-//    @Published var isSheetPresented: Bool = false
     @Published var isSourceViewPresented: Bool = false
-    @Published var isfullScreenPresented: Bool = false
     @Published var isLoading: Bool = true
+    @Published var detVM: DetailsViewModel
+    
+    @Published var shouldReload: Bool = true
 
+//экземпляр
+    @Published var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
+    
     private var cancellables: Set<AnyCancellable> = []
          
     var greeting: String {
@@ -34,6 +38,27 @@ final class ViewModel: ObservableObject, Sendable {
     }
     
     init() {
+        let placeholderItem = ArticleModel(
+            articleId: "placeholder",
+            title: "Placeholder Title",
+            link: "https://example.com",
+            description: "Placeholder description",
+            pubDate: Date(),
+            pubDateTZ: "GMT",
+            sourceId: "source_placeholder",
+            sourcePriority: 1,
+            sourceName: "Placeholder Source",
+            sourceUrl: "https://example.com",
+            sourceIcon: "https://example.com/icon.png",
+            language: "en",
+            country: ["US"],
+            category: ["General"],
+            translatedDescription: "",
+            translatedTitle: ""
+        )
+        let placeholderSubject = PassthroughSubject<ArticleModel, Never>()
+        self.detVM = DetailsViewModel(item: placeholderItem, translatedArticleId: placeholderSubject)
+        
         $selectedCategory
             .receive(on: DispatchQueue.main)
             .sink { [weak self] category in
@@ -49,8 +74,11 @@ final class ViewModel: ObservableObject, Sendable {
             }
             .store(in: &cancellables)
     }
+
     
     func loadNews() async {
+        guard shouldReload else { return }
+        shouldReload = false
         guard !ProcessInfo.isPreviewMode else { return }
         do {
             let response: APIResponseModel = try await APIManager.sendRequest(
