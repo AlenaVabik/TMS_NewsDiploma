@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Combine
 
 final class SearchViewModel: ObservableObject {
     @Published var items: [ArticleModel] = []
     @Published var keyWord: String = ""
+    @Published var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
 
     func loadNews(q: String) async {
 
