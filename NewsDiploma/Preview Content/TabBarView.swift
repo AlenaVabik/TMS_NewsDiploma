@@ -11,20 +11,23 @@ struct NewsTabBarView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                FirstContentView(viewModel: ViewModel())
+                FirstContentView()
             }
                 .tabItem {
                     Image(systemName: "house")
-                    Text("Home")
+                    Text("Top News")
                 }
-            
-            Text("Second")
+            NavigationStack {
+                SearchView()
+            }
                 .tabItem {
                     Image(systemName: "magnifyingglass")
-                    Text("Find")
+                    Text("Search")
                 }
             
-            Text("Third")
+            NavigationStack {
+                MapContainerView()
+            }
                 .tabItem {
                     Image(systemName: "mappin.circle.fill")
                     Text("Map")

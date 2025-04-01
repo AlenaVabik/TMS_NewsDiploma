@@ -7,44 +7,58 @@
 
 import SwiftUI
 import Kingfisher
+import Combine
 
 enum Category: String, CaseIterable {
-    case allCategories, business, education, sports, tourism, world
+    case allCategories
+    case business
+    case education
+    case sports
+    case tourism
+    case world
 }
 
 struct FirstContentView: View {
-    @StateObject var viewModel: ViewModel
+    @StateObject private var viewModel = ViewModel()
 
     var body: some View {
         VStack {
             Label(viewModel.greeting, systemImage: "newspaper")
                 .font(.custom("AvenirNext-Bold", size: 20))
                 .padding(.top, 10)
-
-            SearchView()
             
-            Picker("Choose the category", selection: $viewModel.selectedCategory) {
+            Text(DateFormatter.firstScreenDateFormatter.string(from: Date()))
+                 .font(.caption)
+                 .foregroundColor(.white)
+            
+            TabView(selection: $viewModel.selectedCategory) {
                 ForEach(Category.allCases, id: \.self) { category in
-                    Text(category.rawValue.capitalized)
+                    VStack {
+                        Text(category.rawValue.capitalized)
+                            .font(.headline)
+                            .padding()
+                        List(viewModel.items, id: \.articleId) { item in
+                            NavigationLink(
+                                destination: DetailsNewsView(
+                                    detailsViewModel: DetailsViewModel(
+                                        item: item,
+                                        translatedArticleId: viewModel.translatedArticleId
+                                    ),
+                                    item: item
+                                )
+                            ) {
+                                ItemCard(item: item)
+                            }
+                        }
+                        
+                        .scrollContentBackground(.hidden)
+                        .background(Color.secondary)
+                    }
+                    .tag(category)
                 }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .background(Color.orange)
-           
-            
-            List(viewModel.items, id: \.articleId) { item  in
-                NavigationLink(
-                    destination: DetailsNewsView(
-                        viewModel: viewModel,
-                        item: item
-                    )
-                ) {
-                    ItemCard(item: item)
-                }
-            }
-            
-            .scrollContentBackground(.hidden)
-            .background(Color.secondary)
+           }
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
 
 //            Button("Push button") {
 //                viewModel.isSheetPresented = true
@@ -64,13 +78,14 @@ struct FirstContentView: View {
 }
 
 #Preview {
-    let viewModel = ViewModel()
-    
-    NavigationStack {
-        if ProcessInfo.isPreviewMode {
-            viewModel.items = TestData.modelArray
-        }
-         return FirstContentView(viewModel: viewModel)
-    }
+    FirstContentView()
+//    let viewModel = ViewModel()
+//    
+//    NavigationStack {
+//        if ProcessInfo.isPreviewMode {
+//            viewModel.items = TestData.modelArray
+//        }
+//         return FirstContentView(viewModel: viewModel)
+//    }
     
 }

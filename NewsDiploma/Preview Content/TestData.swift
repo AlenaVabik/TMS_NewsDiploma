@@ -28,7 +28,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест1"]
+                    category: ["Тест1"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "567",
@@ -49,7 +51,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест2"]
+                    category: ["Тест2"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "891",
@@ -70,7 +74,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест3"]
+                    category: ["Тест3"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "111",
@@ -91,7 +97,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест4"]
+                    category: ["Тест4"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "333",
@@ -112,7 +120,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"]
+                    category: ["Тест5"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "343",
@@ -133,7 +143,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"]
+                    category: ["Тест5"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "123",
@@ -154,7 +166,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест1"]
+                    category: ["Тест1"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "567",
@@ -175,7 +189,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест2"]
+                    category: ["Тест2"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "891",
@@ -196,7 +212,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест3"]
+                    category: ["Тест3"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "111",
@@ -217,7 +235,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест4"]
+                    category: ["Тест4"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "333",
@@ -238,7 +258,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"]
+                    category: ["Тест5"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 ),
                 ArticleModel(
                     articleId: "343",
@@ -259,7 +281,9 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"]
+                    category: ["Тест5"],
+                    translatedDescription: "",
+                    translatedTitle: "aits"
                 )
             ]
     
@@ -282,8 +306,13 @@ final class TestData {
         sourceIcon: "",
         language: "ru",
         country: ["BY"],
-        category: ["Тест5"]
+        category: ["Тест5"],
+        translatedDescription: "",
+        translatedTitle: "aits"
     )
+    
+//    static let articleModel = DetailsViewModel(item: TestData.modelArray, translatedArticleId: TestData.modelArray.)
+
 }
 
 

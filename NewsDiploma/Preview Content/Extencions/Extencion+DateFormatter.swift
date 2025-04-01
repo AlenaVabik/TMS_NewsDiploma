@@ -7,10 +7,17 @@
 import SwiftUI
 
 extension DateFormatter {
-   static let articleDateFormatter: DateFormatter = {
+    static let articleDateFormatter: DateFormatter = {
        let formatter = DateFormatter()
        formatter.locale = Locale(identifier: "en_US_POSIX")
        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
        return formatter
    }()
+    
+    static let firstScreenDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "EEEE, dd MMMM"
+        return formatter
+    }()
 }
