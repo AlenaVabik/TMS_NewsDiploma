@@ -52,7 +52,8 @@ struct FirstContentView: View {
                         }
                         
                         .scrollContentBackground(.hidden)
-                        .background(Color.secondary)
+//                        .foregroundStyle(.secondary)
+                        .background(Color.black)
                     }
                     .tag(category)
                 }

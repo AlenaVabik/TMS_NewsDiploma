@@ -20,6 +20,7 @@ struct ItemCard: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .foregroundColor(.gray)
         }
+        .background(Color.accentColor.opacity(0.1))
     }
 }
 

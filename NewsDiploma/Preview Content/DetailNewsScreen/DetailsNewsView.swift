@@ -67,7 +67,6 @@ struct DetailsNewsView: View {
                 .blur(radius: showBlur ? 10 : 0)
                 .animation(.easeInOut, value: showBlur)
                 
-                // Опционально: затемнение
                 if showBlur {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()

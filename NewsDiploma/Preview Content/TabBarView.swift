@@ -26,7 +26,7 @@ struct NewsTabBarView: View {
                 }
             
             NavigationStack {
-                MapContainerView()
+                AutorizationView()
             }
                 .tabItem {
                     Image(systemName: "mappin.circle.fill")
