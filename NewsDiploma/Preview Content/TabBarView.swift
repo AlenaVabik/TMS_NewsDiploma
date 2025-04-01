@@ -26,11 +26,11 @@ struct NewsTabBarView: View {
                 }
             
             NavigationStack {
-                AutorizationView()
+//                AutorizationView()
             }
                 .tabItem {
-                    Image(systemName: "mappin.circle.fill")
-                    Text("Map")
+                    Image(systemName: "bookmark.fill")
+                    Text("Saved Articles")
                 }
         }
     }

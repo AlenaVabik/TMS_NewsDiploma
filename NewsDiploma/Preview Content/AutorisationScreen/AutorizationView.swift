@@ -13,7 +13,8 @@ struct AutorizationView: View {
     @State var password = ""
 //    @State var isLoggedIn: Bool = false
     let firebaseManager = FirebaseManager()
-    
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         VStack {
             TextField("Name", text: $name)
@@ -48,9 +49,21 @@ struct AutorizationView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.gray)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.black.opacity(0.5))
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    AutorizationView()
+    NavigationStack {
+        AutorizationView()
+    }
 }

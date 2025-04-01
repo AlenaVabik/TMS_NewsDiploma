@@ -16,7 +16,7 @@ class FirebaseManager {
         
         Auth.auth().createUser(withEmail: userData.email, password: userData.password) { result, error in
             
-            if let error = error {
+            if let error {
 //дописать уведомление об оштбке
                 print("Error: \(error.localizedDescription)")
                 return

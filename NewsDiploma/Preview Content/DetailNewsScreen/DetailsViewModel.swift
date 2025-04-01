@@ -12,11 +12,13 @@ final class DetailsViewModel: ObservableObject {
     var translatedArticleId: PassthroughSubject<ArticleModel, Never>
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var isfullScreenPresented: Bool = false
+    @Published var isSourceViewPresented: Bool = false
     @Published var translatedTitle: String?
     @Published var translatedDescription: String?
     @Published var isTranslated: Bool = false
     
+    @Published var isAutorisationViewPresented: Bool = false
+
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
         self.translatedArticleId = translatedArticleId

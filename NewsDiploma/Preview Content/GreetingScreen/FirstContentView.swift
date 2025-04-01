@@ -60,14 +60,6 @@ struct FirstContentView: View {
            }
             .tabViewStyle(.page)
             .indexViewStyle(.page(backgroundDisplayMode: .always))
-
-//            Button("Push button") {
-//                viewModel.isSheetPresented = true
-//            }
-//            .padding(5)
-//            .sheet(isPresented: $viewModel.isSheetPresented) {
-//                SecondContentView()
-//            }
         }
         .background(Color.red)
         .padding()

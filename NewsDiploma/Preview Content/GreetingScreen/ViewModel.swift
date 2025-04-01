@@ -18,7 +18,7 @@ final class ViewModel: ObservableObject {
     @Published var shouldReload: Bool = true
 
 //экземпляр
-    @Published var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
+    var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
     
     private var cancellables: Set<AnyCancellable> = []
          

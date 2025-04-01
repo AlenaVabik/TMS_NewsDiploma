@@ -24,6 +24,7 @@ struct DetailsNewsView: View {
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
+                    
                     Text(detailsViewModel.isTranslated
                          ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
                          : item.title)
@@ -45,14 +46,16 @@ struct DetailsNewsView: View {
                             .foregroundColor(.gray)
                     }
                     
+                    
                     Text(detailsViewModel.isTranslated
                          ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
                          : (item.description ?? "No description"))
                     .padding(.top, 10)
                     
+                    
+                    
                     Button(action: {
-                        detailsViewModel.isfullScreenPresented = true
-                        
+                        detailsViewModel.isSourceViewPresented = true
                         print("Кнопка 'Source information' нажата.")
                     }) {
                         Text("Source information")
@@ -72,7 +75,7 @@ struct DetailsNewsView: View {
                         .ignoresSafeArea()
                 }
             }
-            .sheet(isPresented: $detailsViewModel.isfullScreenPresented, onDismiss: {
+            .sheet(isPresented: $detailsViewModel.isSourceViewPresented, onDismiss: {
                 showBlur = false
             }) {
                 NavigationStack {
@@ -87,6 +90,8 @@ struct DetailsNewsView: View {
 
             .padding(.horizontal)
         }
+        
+        
         .navigationTitle("Details")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -105,15 +110,36 @@ struct DetailsNewsView: View {
                         .foregroundColor(.red)
                 }
             }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    detailsViewModel.isAutorisationViewPresented = true
+                    print("Кнопка 'Save the article' нажата.")
+                }) {
+                    Image(systemName: "bookmark")
+                        .font(.title2)
+//                        .foregroundColor(.red)
+//                    bookmark.fill
+                }
+            }
+        }
+        .sheet(isPresented: $detailsViewModel.isAutorisationViewPresented, onDismiss: {
+            showBlur = false
+        }) {
+            NavigationStack {
+                AutorizationView()
+                    .presentationDetents([.large, .medium])
+                    .interactiveDismissDisabled()
+                    .onAppear {
+                        showBlur = true
+                    }
+            }
         }
     }
 }
 
 #Preview {
-//    let viewModel = ViewModel()
-//
-//    if ProcessInfo.isPreviewMode {
-//        viewModel.items = TestData.modelArray
-//    }
-//    DetailsNewsView(detailsViewModel: TestData.articleModel, item: TestData.articleModel)
+    NavigationStack {
+        DetailsNewsView(detailsViewModel: TestData.detailViewModel, item: TestData.articleModel)
+    }
 }
