@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseAuth
 
-final class FirebaseManager {
+final class FirebaseManager: ObservableObject {
     
     func isUserLoggedIn() -> Bool {
         return Auth.auth().currentUser != nil
@@ -50,9 +50,7 @@ final class FirebaseManager {
                 } else {
                     completion(false)
                 }
-//                }
-//                print("Пользователь успешно зарегистрирован!")
-//                completion(true)
+
             }
 
         }

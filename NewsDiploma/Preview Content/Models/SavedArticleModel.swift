@@ -6,6 +6,7 @@
 //
 
 struct SavedArticleModel {
+//    var articleId: String
     var title: String
     var description: String
     var image: String

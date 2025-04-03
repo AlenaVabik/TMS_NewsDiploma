@@ -12,11 +12,7 @@ import Combine
 struct DetailsNewsView: View {
     @StateObject private var detailsViewModel: DetailsViewModel
     let item: ArticleModel
-    @State private var showBlur = false
-    
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-    @State private var isLoading = false
+
     
     init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
         _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
@@ -71,23 +67,23 @@ struct DetailsNewsView: View {
                             .cornerRadius(10)
                     }
                 }
-                .blur(radius: showBlur ? 10 : 0)
-                .animation(.easeInOut, value: showBlur)
+                .blur(radius: detailsViewModel.showBlur ? 10 : 0)
+                .animation(.easeInOut, value: detailsViewModel.showBlur)
                 
-                if showBlur {
+                if detailsViewModel.showBlur {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()
                 }
             }
             .sheet(isPresented: $detailsViewModel.isSourceViewPresented, onDismiss: {
-                showBlur = false
+                detailsViewModel.showBlur = false
             }) {
                 NavigationStack {
                     SourceView(articleModel: item)
                         .presentationDetents([.large, .medium])
                         .interactiveDismissDisabled()
                         .onAppear {
-                            showBlur = true
+                            detailsViewModel.showBlur = true
                         }
                 }
             }
@@ -117,10 +113,12 @@ struct DetailsNewsView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    if detailsViewModel.isUserLoggedIn {
+                    if detailsViewModel.firebaseManager.isUserLoggedIn() {
+                        //            если она горит то по нажатию удалить из закладок
+                        //            а если не горит то сохранить
                         detailsViewModel.saveArticle(article: item)
-                        alertMessage = "Saved!"
-                        showAlert = true
+                        detailsViewModel.alertMessage = "Saved!"
+                        detailsViewModel.showAlert = true
                     } else {
                         detailsViewModel.isAutorisationViewPresented = true
                     }
@@ -134,21 +132,26 @@ struct DetailsNewsView: View {
             }
         }
         .sheet(isPresented: $detailsViewModel.isAutorisationViewPresented, onDismiss: {
-            showBlur = false
+            detailsViewModel.showBlur = false
         }) {
             NavigationStack {
                 AutorizationView()
                     .presentationDetents([.large, .medium])
                     .interactiveDismissDisabled()
                     .onAppear {
-                        showBlur = true
+                        detailsViewModel.showBlur = true
                     }
             }
         }
-        .alert(alertMessage, isPresented: $showAlert) {
+        .alert(detailsViewModel.alertMessage, isPresented: $detailsViewModel.showAlert) {
             Button("OK", role: .cancel) {
                 
             }
+        }
+        .onAppear() {
+            detailsViewModel.checkArticleInSavedBoockmarks(article: item)
+//            в зависимости от результата закрасить кнопку
+
         }
         
     }

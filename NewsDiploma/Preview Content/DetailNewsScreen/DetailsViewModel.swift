@@ -20,8 +20,14 @@ final class DetailsViewModel: ObservableObject {
     @Published var isTranslated: Bool = false
     
     @Published var isAutorisationViewPresented: Bool = false
-    @Published var isUserLoggedIn = FirebaseManager().isUserLoggedIn()
 
+    @State var showBlur = false
+    
+    @State var showAlert = false
+    @State var alertMessage = ""
+    
+    var firebaseManager = FirebaseManager()
+    
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
         self.translatedArticleId = translatedArticleId
@@ -79,7 +85,8 @@ final class DetailsViewModel: ObservableObject {
             .collection("users")
             .document(currentUser.uid)
             .collection("bookmarks")
-            .addDocument(data: [
+            .document(article.articleId)
+            .setData([
                 "title": article.title,
                 "description": article.description ?? "",
                 "imageUrl": article.imageUrl ?? ""
@@ -92,6 +99,14 @@ final class DetailsViewModel: ObservableObject {
                     print("Article saved successfully!")
                 }
             }
+    }
+    
+    func checkArticleInSavedBoockmarks(article: ArticleModel) -> Bool {
+        guard let currentUser = Auth.auth().currentUser else {
+            return false
+        }
+//        дописать проверку по id
+        return true
     }
 
 

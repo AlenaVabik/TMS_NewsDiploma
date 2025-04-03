@@ -8,49 +8,43 @@
 import SwiftUI
 
 struct AutorizationView: View {
-    @State var name = ""
-    @State var email = ""
-    @State var password = ""
-    let firebaseManager = FirebaseManager()
+    @StateObject private var autorizationViewModel = AutorizationViewModel()
+
     @Environment(\.dismiss) private var dismiss
     
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-    @State private var isLoading = false
-//    @StateObject private var detailsViewModel: DetailsViewModel
-    @State var isUserLoggedIn = FirebaseManager().isUserLoggedIn()
+
 
     var body: some View {
         VStack {
-            TextField("Name", text: $name)
+            TextField("Name", text: $autorizationViewModel.name)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
             
-            TextField("Email", text: $email)
+            TextField("Email", text: $autorizationViewModel.email)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
             
-            TextField("Password", text: $password)
+            TextField("Password", text: $autorizationViewModel.password)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
             
             Button {
-                isLoading = true
-                firebaseManager.registerUser(name: name, email: email, password: password) { success in
-                    isLoading = false
+                autorizationViewModel.isLoading = true
+                autorizationViewModel.registerUser { success in
+                    autorizationViewModel.isLoading = false
                     if success {
                         dismiss()
                     } else {
-                        alertMessage = "Register error"
-                        showAlert = true
+                        autorizationViewModel.alertMessage = "Register error"
+                        autorizationViewModel.showAlert = true
                         print("Ошибка регистрации")
                     }
                 }
             } label: {
-                if isLoading {
+                if autorizationViewModel.isLoading {
                     ProgressView()
                 } else {
                     Text("Register")
@@ -64,13 +58,12 @@ struct AutorizationView: View {
             
             
             Button {
-                firebaseManager.loginUser(email: email, password: password) { success in
+                autorizationViewModel.loginUser { success in
                     if success {
-                        isUserLoggedIn = true
                         dismiss()
                     } else {
-                        alertMessage = "Login error"
-                        showAlert = true
+                        autorizationViewModel.alertMessage = "Login error"
+                        autorizationViewModel.showAlert = true
                         print("Ошибка входа")
                     }
                 }
@@ -87,7 +80,7 @@ struct AutorizationView: View {
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.gray)
-            .alert(alertMessage, isPresented: $showAlert) {
+            .alert(autorizationViewModel.alertMessage, isPresented: $autorizationViewModel.showAlert) {
                 Button("OK", role: .cancel) {
                     
                 }

@@ -12,9 +12,7 @@ import Firebase
 
 struct SavedItemsView: View {
     @StateObject private var savedViewModel = SavedViewModel()
-    let firebaseManager = FirebaseManager()
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+
     
     var body: some View {
         NavigationView {
@@ -48,9 +46,9 @@ struct SavedItemsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     Task {
-                        await firebaseManager.logOut()
-                        alertMessage = "You logged out!"
-                        showAlert = true
+                        await savedViewModel.firebaseManager.logOut()
+                        savedViewModel.alertMessage = "You logged out!"
+                        savedViewModel.showAlert = true
                     }
                 }) {
                     HStack{
@@ -65,11 +63,16 @@ struct SavedItemsView: View {
                 }
             }
         }
-        .task {
-            await savedViewModel.loadSavedArticles()
+        .onAppear {
+            Task {
+                await savedViewModel.loadSavedArticles()
+            }
         }
+//        .task {
+//            await savedViewModel.loadSavedArticles()
+//        }
         .navigationTitle("Saved")
-        .alert(alertMessage, isPresented: $showAlert) {
+        .alert(savedViewModel.alertMessage, isPresented: $savedViewModel.showAlert) {
             Button("OK", role: .cancel) {
                 
             }
