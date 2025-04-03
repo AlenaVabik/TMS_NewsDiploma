@@ -6,6 +6,8 @@
 //
 import SwiftUI
 import Combine
+import Firebase
+import FirebaseAuth
 
 final class DetailsViewModel: ObservableObject {
     var item: ArticleModel
@@ -18,6 +20,7 @@ final class DetailsViewModel: ObservableObject {
     @Published var isTranslated: Bool = false
     
     @Published var isAutorisationViewPresented: Bool = false
+    @Published var isUserLoggedIn = FirebaseManager().isUserLoggedIn()
 
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
@@ -65,6 +68,33 @@ final class DetailsViewModel: ObservableObject {
     func toggleTranslation() {
         isTranslated.toggle()
     }
+    
+    func saveArticle(article: ArticleModel) {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован. Статья не может быть сохранена.")
+            return
+        }
+        
+        Firestore.firestore()
+            .collection("users")
+            .document(currentUser.uid)
+            .collection("bookmarks")
+            .addDocument(data: [
+                "title": article.title,
+                "description": article.description ?? "",
+                "imageUrl": article.imageUrl ?? ""
+            ]) { error in
+                if let error {
+                    //дописать алерты!!!
+                    print("Error saving article: \(error.localizedDescription)")
+                } else {
+                    //дописать алерты!!!
+                    print("Article saved successfully!")
+                }
+            }
+    }
+
+
 }
 
 

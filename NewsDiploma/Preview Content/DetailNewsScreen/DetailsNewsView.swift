@@ -14,6 +14,10 @@ struct DetailsNewsView: View {
     let item: ArticleModel
     @State private var showBlur = false
     
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isLoading = false
+    
     init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
         _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
         self.item = item
@@ -113,7 +117,13 @@ struct DetailsNewsView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    detailsViewModel.isAutorisationViewPresented = true
+                    if detailsViewModel.isUserLoggedIn {
+                        detailsViewModel.saveArticle(article: item)
+                        alertMessage = "Saved!"
+                        showAlert = true
+                    } else {
+                        detailsViewModel.isAutorisationViewPresented = true
+                    }
                     print("Кнопка 'Save the article' нажата.")
                 }) {
                     Image(systemName: "bookmark")
@@ -135,6 +145,12 @@ struct DetailsNewsView: View {
                     }
             }
         }
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                
+            }
+        }
+        
     }
 }
 

@@ -9,39 +9,77 @@ import Foundation
 import Firebase
 import FirebaseAuth
 
-class FirebaseManager {
+final class FirebaseManager {
+    
+    func isUserLoggedIn() -> Bool {
+        return Auth.auth().currentUser != nil
+    }
     
     
-    func registerUser(userData: UserData) {
-        
-        Auth.auth().createUser(withEmail: userData.email, password: userData.password) { result, error in
+    func registerUser(name: String, email: String, password: String, completion: @escaping (Bool) -> Void) {
+
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
             
             if let error {
-//дописать уведомление об оштбке
+                //дописать уведомление об оштбке
                 print("Error: \(error.localizedDescription)")
-                return
-            }
-//отсылает письмо на почту для вериыикации
-            result?.user.sendEmailVerification()
-            print(result?.user.uid)
-            print("User registered successfully!")
-            
-            if let uid = result?.user.uid {
-                Firestore.firestore()
-                    .collection("users")
-                    .document(uid)
-                    .setData([
-                    "email": userData.email,
-                    "name": userData.name,
-                    "age": Date(),
-                    "isValid": false
-                    ], merge: true) { error in
-                        if let error = error {
-                            print("Error saving user data: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                if let uid = result?.user.uid {
+                    //отсылает письмо на почту для вериыикации
+                    result?.user.sendEmailVerification()
+                    print(result?.user.uid as Any)
+                    
+                    Firestore.firestore()
+                        .collection("users")
+                        .document(uid)
+                        .setData([
+                            "email": email,
+                            "name": name,
+                            "age": Date(),
+                            "isValid": false
+                        ], merge: true) { error in
+                            if let error {
+                                print("Error saving user data: \(error.localizedDescription)")
+                                completion(false)
+                            } else {
+                                print("Данные пользователя успешно сохранены!")
+                                completion(true)
+                            }
                         }
-                    }
+                } else {
+                    completion(false)
+                }
+//                }
+//                print("Пользователь успешно зарегистрирован!")
+//                completion(true)
             }
-            
+
         }
     }
+    
+    func loginUser(email: String, password: String, completion: @escaping (Bool) -> Void) {
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if let error {
+                print("Ошибка входа: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                print("Пользователь успешно вошел!")
+                completion(true)
+            }
+        }
+    }
+    
+    func logOut() async {
+        do {
+            try Auth.auth().signOut()
+            print("Пользователь успешно вышел из аккаунта!")
+// может дополнительно перейти на экран авторизации??????
+        } catch {
+            print("Ошибка выхода: \(error.localizedDescription)")
+        }
+    }
+
+
+
 }

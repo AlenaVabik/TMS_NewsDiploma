@@ -26,7 +26,7 @@ struct NewsTabBarView: View {
                 }
             
             NavigationStack {
-//                AutorizationView()
+                SavedItemsView()
             }
                 .tabItem {
                     Image(systemName: "bookmark.fill")

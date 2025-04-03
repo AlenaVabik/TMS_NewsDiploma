@@ -6,13 +6,77 @@
 //
 
 import SwiftUI
+import Kingfisher
+import FirebaseAuth
+import Firebase
 
 struct SavedItemsView: View {
+    @StateObject private var savedViewModel = SavedViewModel()
+    let firebaseManager = FirebaseManager()
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
-        Text("Saved Items")
-            .navigationTitle("Saved")
+        NavigationView {
+            if savedViewModel.savedArticles.isEmpty {
+                Text("No saved articles yet")
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                    .navigationTitle("Saved")
+            } else {
+                List(savedViewModel.savedArticles, id: \.title) { article in
+                    HStack {
+                        if let url = URL(string: article.image) {
+                            KFImage(url)
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(5)
+                        }
+                        VStack(alignment: .leading) {
+                            Text(article.title)
+                                .font(.headline)
+                            Text(article.description)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    Task {
+                        await firebaseManager.logOut()
+                        alertMessage = "You logged out!"
+                        showAlert = true
+                    }
+                }) {
+                    HStack{
+                        Text("Log out")
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                    }
+                    .padding(10)
+                    .background(Color.red.opacity(0.2))
+                    .cornerRadius(10)
+                    .foregroundColor(.red)
+
+                }
+            }
+        }
+        .task {
+            await savedViewModel.loadSavedArticles()
+        }
+        .navigationTitle("Saved")
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                
+            }
+        }
     }
+    
+
 }
 
 #Preview {
