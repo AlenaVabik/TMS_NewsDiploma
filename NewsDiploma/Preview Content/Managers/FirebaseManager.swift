@@ -79,5 +79,22 @@ final class FirebaseManager: ObservableObject {
     }
 
 
+    func removeArticleFromBookmarks(articleId: String) async {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован,статья не может быть удалена")
+            return
+        }
+        do {
+            try await Firestore.firestore()
+                .collection("users")
+                .document(currentUser.uid)
+                .collection("bookmarks")
+                .document(articleId)
+                .delete()
+            print("Статья успешно удалена из закладок!")
+        } catch {
+            print("ошибка \(error.localizedDescription)")
+        }
+    }
 
 }
