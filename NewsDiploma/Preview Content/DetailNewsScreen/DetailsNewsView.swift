@@ -9,11 +9,17 @@ import SwiftUI
 import Kingfisher
 import Combine
 
+enum BookmarkState: String {
+    case unmarked = "bookmark"
+    case marked = "bookmark.fill"
+}
+
 struct DetailsNewsView: View {
     @StateObject private var detailsViewModel: DetailsViewModel
-    let item: ArticleModel
+    var item: ArticleModel
+        
+    @State private var bookmarkState: BookmarkState = .unmarked
 
-    
     init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
         _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
         self.item = item
@@ -92,7 +98,7 @@ struct DetailsNewsView: View {
         }
         
         
-        .navigationTitle("Details")
+        .navigationTitle(bookmarkState.rawValue)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
@@ -114,20 +120,26 @@ struct DetailsNewsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     if detailsViewModel.firebaseManager.isUserLoggedIn() {
-                        //            если она горит то по нажатию удалить из закладок
-                        //            а если не горит то сохранить
-                        detailsViewModel.saveArticle(article: item)
-                        detailsViewModel.alertMessage = "Saved!"
-                        detailsViewModel.showAlert = true
+                        if bookmarkState == .marked {
+                            Task {
+                                await detailsViewModel.firebaseManager.removeArticleFromBookmarks(articleId: item.articleId)
+                                bookmarkState = .unmarked
+                            }
+                        } else {
+                            detailsViewModel.saveArticle(article: item)
+                            bookmarkState = .marked
+                            detailsViewModel.alertMessage = "Saved!"
+                            detailsViewModel.showAlert = true
+                        }
+                        //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить                        
                     } else {
                         detailsViewModel.isAutorisationViewPresented = true
                     }
                     print("Кнопка 'Save the article' нажата.")
                 }) {
-                    Image(systemName: "bookmark")
+                    Image(systemName: bookmarkState.rawValue)
                         .font(.title2)
-//                        .foregroundColor(.red)
-//                    bookmark.fill
+                        .foregroundColor(bookmarkState == .marked ? .yellow : .gray)
                 }
             }
         }
@@ -136,7 +148,7 @@ struct DetailsNewsView: View {
         }) {
             NavigationStack {
                 AutorizationView()
-                    .presentationDetents([.large, .medium])
+//                    .presentationDetents([.large, .medium])
                     .interactiveDismissDisabled()
                     .onAppear {
                         detailsViewModel.showBlur = true
@@ -149,9 +161,18 @@ struct DetailsNewsView: View {
             }
         }
         .onAppear() {
-            detailsViewModel.checkArticleInSavedBoockmarks(article: item)
-//            в зависимости от результата закрасить кнопку
+            Task {
+                let isSaved = await detailsViewModel.checkArticleInSavedBookmarks(articleId: item.articleId)
+                if isSaved {
+                    bookmarkState = .marked
+                    print("Статья уже сохранена в закладках.")
+                } else {
+                    bookmarkState = .unmarked
+                    print("Статья не найдена в закладках.")
+                }
+            }
 
+//            в зависимости от результата закрасить кнопку
         }
         
     }

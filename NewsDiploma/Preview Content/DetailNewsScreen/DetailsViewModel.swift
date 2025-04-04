@@ -21,10 +21,10 @@ final class DetailsViewModel: ObservableObject {
     
     @Published var isAutorisationViewPresented: Bool = false
 
-    @State var showBlur = false
+    @Published var showBlur = false
     
-    @State var showAlert = false
-    @State var alertMessage = ""
+    @Published var showAlert = false
+    @Published var alertMessage = ""
     
     var firebaseManager = FirebaseManager()
     
@@ -101,13 +101,27 @@ final class DetailsViewModel: ObservableObject {
             }
     }
     
-    func checkArticleInSavedBoockmarks(article: ArticleModel) -> Bool {
+    func checkArticleInSavedBookmarks(articleId: String) async -> Bool {
         guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован.")
             return false
         }
-//        дописать проверку по id
-        return true
+
+        do {
+            let snapshot = try await Firestore.firestore()
+                .collection("users")
+                .document(currentUser.uid)
+                .collection("bookmarks")
+                .document(articleId)
+                .getDocument()
+
+            return snapshot.exists
+        } catch {
+            print("Ошибка проверки статьи в закладках: \(error.localizedDescription)")
+            return false
+        }
     }
+
 
 
 }
