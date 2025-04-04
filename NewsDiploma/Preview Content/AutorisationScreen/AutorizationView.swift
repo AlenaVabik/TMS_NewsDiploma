@@ -9,31 +9,50 @@ import SwiftUI
 
 struct AutorizationView: View {
     @StateObject private var autorizationViewModel = AutorizationViewModel()
-
     @Environment(\.dismiss) private var dismiss
+
+    @State private var keyboardOffset: CGFloat = 0
     
-
-
     var body: some View {
         VStack {
+            Spacer().frame(height: 20)
+            
+            Image(systemName: "info.circle.fill")
+                .font(.title)
+                .foregroundStyle(.black)
+            
+            Text("To save an article for later, please sign in or register for an account.")
+                .frame(maxWidth: 300, maxHeight: .infinity)
+                .multilineTextAlignment(.center)
+//                .padding()
+                
+            
             TextField("Name", text: $autorizationViewModel.name)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
+                .padding(.trailing, 15)
+                .padding(.leading, 15)
+
             
             TextField("Email", text: $autorizationViewModel.email)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
+                .keyboardType(.emailAddress)
+                .padding(.trailing, 15)
+                .padding(.leading, 15)
             
             TextField("Password", text: $autorizationViewModel.password)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
+                .padding(.trailing, 15)
+                .padding(.leading, 15)
             
             Button {
                 autorizationViewModel.isLoading = true
-                autorizationViewModel.registerUser { success in
+                autorizationViewModel.firebaseManager.registerUser(name: autorizationViewModel.name, email: autorizationViewModel.email, password: autorizationViewModel.password) { success in
                     autorizationViewModel.isLoading = false
                     if success {
                         dismiss()
@@ -51,15 +70,16 @@ struct AutorizationView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .foregroundStyle(.white)
-                        .background(Color.green)
-                        .cornerRadius(10)
-                }
+                        .background(Color.black)
+                        .padding(.trailing, 15)
+                        .padding(.leading, 15)                }
             }
             
             
             Button {
-                autorizationViewModel.loginUser { success in
+                autorizationViewModel.firebaseManager.loginUser(email: autorizationViewModel.email, password: autorizationViewModel.password) { success in
                     if success {
+//                        autorizationViewModel.firebaseManager.isUserLoggedIn = true
                         dismiss()
                     } else {
                         autorizationViewModel.alertMessage = "Login error"
@@ -68,18 +88,22 @@ struct AutorizationView: View {
                     }
                 }
             } label: {
-                Text("Login")
+                Text("Sign in")
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
-                    .background(Color.blue)
+                    .foregroundStyle(.black)
                     .cornerRadius(10)
+                    .border(Color.black, width: 2)
+                    .padding(.trailing, 15)
+                    .padding(.leading, 15)
             }
             
+            Spacer()
+            
             .padding(.horizontal, 20)
-            .padding()
+            .padding(.bottom, keyboardOffset)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.gray)
+//            .background(Color.gray)
             .alert(autorizationViewModel.alertMessage, isPresented: $autorizationViewModel.showAlert) {
                 Button("OK", role: .cancel) {
                     
@@ -92,16 +116,39 @@ struct AutorizationView: View {
                     Button {
                         dismiss()
                     } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.black.opacity(0.5))
+                        Text("Close")
+                            .foregroundStyle(.red)
                     }
                 }
+            }
+            .onAppear {
+                setupKeyboardListeners()
+            }
+            .onDisappear {
+                removeKeyboardListeners()
             }
         }
         
         
         
     }
+    
+        private func setupKeyboardListeners() {
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
+                if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+                    keyboardOffset = keyboardFrame.height
+                }
+            }
+            
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
+                keyboardOffset = 0
+            }
+        }
+
+        private func removeKeyboardListeners() {
+            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        }
 }
 
 #Preview {
