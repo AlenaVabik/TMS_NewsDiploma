@@ -8,22 +8,14 @@
 import SwiftUI
 
 final class AutorizationViewModel: ObservableObject {
-    @StateObject private var firebaseManager = FirebaseManager()
+    @Published var firebaseManager = FirebaseManager()
 
-    @State var name = ""
-    @State var email = ""
-    @State var password = ""
+    @Published var name = ""
+    @Published var email = ""
+    @Published var password = ""
     
-    @State var showAlert = false
-    @State var alertMessage = ""
-    @State var isLoading = false
-    
-    func registerUser(completion: @escaping (Bool) -> Void) {
-        firebaseManager.registerUser(name: name, email: email, password: password, completion: completion)
-    }
-        
-    func loginUser(completion: @escaping (Bool) -> Void) {
-        firebaseManager.loginUser(email: email, password: password, completion: completion)
-    }
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    @Published var isLoading = false
 }
 

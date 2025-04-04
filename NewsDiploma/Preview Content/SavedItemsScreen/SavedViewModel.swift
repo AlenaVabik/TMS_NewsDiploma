@@ -10,9 +10,9 @@ import FirebaseAuth
 
 final class SavedViewModel: ObservableObject {
     @Published var savedArticles: [SavedArticleModel] = []
-    let firebaseManager = FirebaseManager()
-    @State var showAlert = false
-    @State var alertMessage = ""
+    @Published var firebaseManager = FirebaseManager()
+    @Published var showAlert = false
+    @Published var alertMessage = ""
     
     func loadSavedArticles() async {
         guard let currentUser = Auth.auth().currentUser else { return }
