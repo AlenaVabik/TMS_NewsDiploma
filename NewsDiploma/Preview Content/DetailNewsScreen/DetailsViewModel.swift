@@ -26,7 +26,7 @@ final class DetailsViewModel: ObservableObject {
     @Published var showAlert = false
     @Published var alertMessage = ""
     
-    @Published var firebaseManager = FirebaseManager()
+    private let firebaseManager = FirebaseManager()
     
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
@@ -75,11 +75,52 @@ final class DetailsViewModel: ObservableObject {
         isTranslated.toggle()
     }
     
-    
+    func removeOrSaveArticleAction(bookmarkState: BookmarkState, completion: @escaping (BookmarkState) -> Void) {
+        Task {
+            if firebaseManager.isUserLoggedIn() {
+                if bookmarkState == .marked {
+                    await firebaseManager.removeArticleFromBookmarks(articleId: item.articleId)
+                    await MainActor.run {
+                        alertMessage = "Removed from bookmarks"
+                        showAlert = true
+                        completion(.unmarked)
+                    }
+                } else {
+                    do {
+                        try await
+                        firebaseManager.saveArticle(article: item)
+                        await MainActor.run {
+                            alertMessage = "Saved to bookmarks!"
+                            showAlert = true
+                            completion(.marked)
+                        }
+                    } catch {
+                        await MainActor.run {
+                            alertMessage = "Saving error: \(error.localizedDescription)"
+                            showAlert = true
+                        }
+                    }
+                }
+                //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить
+            } else {
+                await MainActor.run {
+                    isAutorisationViewPresented = true
+                }
+            }
+        }
+    }
 
-
-
-
+    func checkBookmarkAction(bookmarkState: BookmarkState, completion: @escaping (BookmarkState) -> Void) {
+        Task {
+            if await firebaseManager.checkArticleInSavedBookmarks(articleId: item.articleId) {
+                completion(.marked)
+                print("Статья уже сохранена в закладках.")
+            } else {
+                completion(.unmarked)
+                print("Статья не найдена в закладках.")
+            }
+        }
+    }
 }
 
 

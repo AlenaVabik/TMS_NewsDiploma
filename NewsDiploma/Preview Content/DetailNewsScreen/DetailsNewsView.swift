@@ -119,30 +119,9 @@ struct DetailsNewsView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        if detailsViewModel.firebaseManager.isUserLoggedIn() {
-                            if bookmarkState == .marked {
-                                await detailsViewModel.firebaseManager.removeArticleFromBookmarks(articleId: item.articleId)
-                                bookmarkState = .unmarked
-                            } else {
-                                do {
-                                    try await
-                                    detailsViewModel.firebaseManager.saveArticle(article: item)
-                                    bookmarkState = .marked
-                                    detailsViewModel.alertMessage = "Saved!"
-                                    detailsViewModel.showAlert = true
-                                    
-                                } catch {
-                                    detailsViewModel.alertMessage = "Saving error: \(error.localizedDescription)"
-                                    detailsViewModel.showAlert = true
-                                }
-                            }
-                            //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить
-                        } else {
-                            detailsViewModel.isAutorisationViewPresented = true
-                        }
+                    detailsViewModel.removeOrSaveArticleAction(bookmarkState: bookmarkState) { newState in
+                        bookmarkState = newState
                     }
-                    print("Кнопка 'Save the article' нажата.")
                 }) {
                     Image(systemName: bookmarkState.rawValue)
                         .font(.title2)
@@ -167,16 +146,9 @@ struct DetailsNewsView: View {
             }
         }
         .onAppear() {
-            Task {
-                if await detailsViewModel.firebaseManager.checkArticleInSavedBookmarks(articleId: item.articleId) {
-                    bookmarkState = .marked
-                    print("Статья уже сохранена в закладках.")
-                } else {
-                    bookmarkState = .unmarked
-                    print("Статья не найдена в закладках.")
-                }
+            detailsViewModel.checkBookmarkAction(bookmarkState: bookmarkState) { newState in
+                bookmarkState = newState
             }
-
 //            в зависимости от результата закрасить кнопку
         }
         
