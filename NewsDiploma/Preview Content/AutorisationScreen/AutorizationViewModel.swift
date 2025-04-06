@@ -42,14 +42,13 @@ final class AutorizationViewModel: ObservableObject {
     
     func loginUserAction(dismiss: @escaping () -> Void) {
         Task {
-            do {
-                try await firebaseManager.loginUser(
+            if let _ = try? await firebaseManager.loginUser(
                     email: email,
-                    password: password)
+                    password: password) {
                 await MainActor.run {
                     dismiss()
                 }
-            } catch {
+            } else {
                 await MainActor.run {
                     alertMessage = "Login error"
                     showAlert = true
