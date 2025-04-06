@@ -37,7 +37,6 @@ struct ItemCard: View {
                     .foregroundColor(.gray)
             }
         }
-//        .background(Color.accentColor.opacity(0.1))
     }
 }
 

@@ -78,7 +78,9 @@ final class ViewModel: ObservableObject {
     
     func loadNews() async {
         guard shouldReload else { return }
-        shouldReload = false
+        await MainActor.run {
+            shouldReload = false
+        }
         guard !ProcessInfo.isPreviewMode else { return }
         do {
             let response: APIResponseModel = try await APIManager.sendRequest(

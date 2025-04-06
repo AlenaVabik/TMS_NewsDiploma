@@ -39,7 +39,6 @@ struct FirstContentView: View {
                             .frame(maxWidth: .infinity, maxHeight: 27)
                             .border(Color.black, width: 1)
 
-//                            .padding()
                         Divider()
                         List(viewModel.items, id: \.articleId) { item in
                             NavigationLink(
@@ -56,8 +55,6 @@ struct FirstContentView: View {
                         }
                         
                         .scrollContentBackground(.visible)
-//                        .foregroundStyle(.secondary)
-//                        .background(Color.black)
                     }
                     .tag(category)
                 }
@@ -66,7 +63,6 @@ struct FirstContentView: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
         }
         .background(Color.white)
-//        .padding()
         .task {
             await viewModel.loadNews()
         }
