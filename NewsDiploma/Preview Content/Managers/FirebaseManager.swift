@@ -41,17 +41,6 @@ final class FirebaseManager: ObservableObject {
         }
     }
     
-//    func loginUser(email: String, password: String, completion: @escaping (Bool) -> Void) {
-//        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-//            if let error {
-//                print("Ошибка входа: \(error.localizedDescription)")
-//                completion(false)
-//            } else {
-//                print("Пользователь успешно вошел!")
-//                completion(true)
-//            }
-//        }
-//    }
     
     func loginUser(email: String, password: String) async throws {
         do {
@@ -92,4 +81,49 @@ final class FirebaseManager: ObservableObject {
         }
     }
 
+    
+    func saveArticle(article: ArticleModel)  async throws {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован. Статья не может быть сохранена.")
+            return
+        }
+        
+        do {
+            try await Firestore.firestore()
+                .collection("users")
+                .document(currentUser.uid)
+                .collection("bookmarks")
+                .document(article.articleId)
+                .setData([
+                    "title": article.title,
+                    "description": article.description ?? "",
+                    "imageUrl": article.imageUrl ?? ""
+                ])
+            print("Article saved successfully!")
+        } catch {
+            print("Error saving article: \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
+    func checkArticleInSavedBookmarks(articleId: String) async -> Bool {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован.")
+            return false
+        }
+
+        do {
+            let snapshot = try await Firestore.firestore()
+                .collection("users")
+                .document(currentUser.uid)
+                .collection("bookmarks")
+                .document(articleId)
+                .getDocument()
+
+            return snapshot.exists
+        } catch {
+            print("Ошибка проверки статьи в закладках: \(error.localizedDescription)")
+            return false
+        }
+    }
 }

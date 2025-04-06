@@ -26,7 +26,7 @@ final class DetailsViewModel: ObservableObject {
     @Published var showAlert = false
     @Published var alertMessage = ""
     
-    var firebaseManager = FirebaseManager()
+    @Published var firebaseManager = FirebaseManager()
     
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
@@ -75,52 +75,8 @@ final class DetailsViewModel: ObservableObject {
         isTranslated.toggle()
     }
     
-    func saveArticle(article: ArticleModel) {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("Пользователь не авторизован. Статья не может быть сохранена.")
-            return
-        }
-        
-        Firestore.firestore()
-            .collection("users")
-            .document(currentUser.uid)
-            .collection("bookmarks")
-            .document(article.articleId)
-            .setData([
-                "title": article.title,
-                "description": article.description ?? "",
-                "imageUrl": article.imageUrl ?? ""
-            ]) { error in
-                if let error {
-                    //дописать алерты!!!
-                    print("Error saving article: \(error.localizedDescription)")
-                } else {
-                    //дописать алерты!!!
-                    print("Article saved successfully!")
-                }
-            }
-    }
     
-    func checkArticleInSavedBookmarks(articleId: String) async -> Bool {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("Пользователь не авторизован.")
-            return false
-        }
 
-        do {
-            let snapshot = try await Firestore.firestore()
-                .collection("users")
-                .document(currentUser.uid)
-                .collection("bookmarks")
-                .document(articleId)
-                .getDocument()
-
-            return snapshot.exists
-        } catch {
-            print("Ошибка проверки статьи в закладках: \(error.localizedDescription)")
-            return false
-        }
-    }
 
 
 

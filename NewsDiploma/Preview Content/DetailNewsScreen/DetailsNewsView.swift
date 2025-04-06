@@ -119,21 +119,28 @@ struct DetailsNewsView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    if detailsViewModel.firebaseManager.isUserLoggedIn() {
-                        if bookmarkState == .marked {
-                            Task {
+                    Task {
+                        if detailsViewModel.firebaseManager.isUserLoggedIn() {
+                            if bookmarkState == .marked {
                                 await detailsViewModel.firebaseManager.removeArticleFromBookmarks(articleId: item.articleId)
                                 bookmarkState = .unmarked
+                            } else {
+                                do {
+                                    try await
+                                    detailsViewModel.firebaseManager.saveArticle(article: item)
+                                    bookmarkState = .marked
+                                    detailsViewModel.alertMessage = "Saved!"
+                                    detailsViewModel.showAlert = true
+                                    
+                                } catch {
+                                    detailsViewModel.alertMessage = "Saving error: \(error.localizedDescription)"
+                                    detailsViewModel.showAlert = true
+                                }
                             }
+                            //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить
                         } else {
-                            detailsViewModel.saveArticle(article: item)
-                            bookmarkState = .marked
-                            detailsViewModel.alertMessage = "Saved!"
-                            detailsViewModel.showAlert = true
+                            detailsViewModel.isAutorisationViewPresented = true
                         }
-                        //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить                        
-                    } else {
-                        detailsViewModel.isAutorisationViewPresented = true
                     }
                     print("Кнопка 'Save the article' нажата.")
                 }) {
@@ -148,7 +155,6 @@ struct DetailsNewsView: View {
         }) {
             NavigationStack {
                 AutorizationView()
-//                    .presentationDetents([.large, .medium])
                     .interactiveDismissDisabled()
                     .onAppear {
                         detailsViewModel.showBlur = true
@@ -162,7 +168,7 @@ struct DetailsNewsView: View {
         }
         .onAppear() {
             Task {
-                if await detailsViewModel.checkArticleInSavedBookmarks(articleId: item.articleId) {
+                if await detailsViewModel.firebaseManager.checkArticleInSavedBookmarks(articleId: item.articleId) {
                     bookmarkState = .marked
                     print("Статья уже сохранена в закладках.")
                 } else {
