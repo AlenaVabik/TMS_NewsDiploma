@@ -98,7 +98,6 @@ struct DetailsNewsView: View {
         }
         
         
-        .navigationTitle(bookmarkState.rawValue)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {

@@ -61,11 +61,10 @@ struct SavedItemsView: View {
                     
                 }
             }
-            .onAppear {
-                Task {
-                    await savedViewModel.loadSavedArticles()
-                }
+            .task {
+                await savedViewModel.loadSavedArticles()
             }
+
         }
     }
     

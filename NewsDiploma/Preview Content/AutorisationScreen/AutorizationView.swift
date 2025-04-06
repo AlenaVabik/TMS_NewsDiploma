@@ -16,7 +16,6 @@ struct AutorizationView: View {
 
     var body: some View {
         VStack {
-            
             Image(systemName: "info.circle.fill")
                 .font(.title)
                 .foregroundStyle(.black)
@@ -51,10 +50,11 @@ struct AutorizationView: View {
                 .padding(.leading, 15)
                 .focused($isTextFieldFocused)
             
+            
+            
             Button {
                 autorizationViewModel.isLoading = true
-                autorizationViewModel.registerUserAction { dismiss() }
-
+                autorizationViewModel.registerUserAction(dismiss: dismiss.callAsFunction)
             } label: {
                 if autorizationViewModel.isLoading {
                     ProgressView()
@@ -70,9 +70,9 @@ struct AutorizationView: View {
             }
             
             
+            
             Button {
                 autorizationViewModel.loginUserAction { dismiss() }
-
             } label: {
                 Text("Sign in")
                     .padding()
@@ -85,22 +85,8 @@ struct AutorizationView: View {
             }
             
             
-            .padding(.horizontal, 20)
-            .padding(.bottom, keyboardOffset)
-            .onChange(of: isTextFieldFocused) {
-                withAnimation {
-                    keyboardOffset = isTextFieldFocused ? 300 : 0
-                }
-            }
-            .animation(.easeInOut, value: keyboardOffset)
             
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            .alert(autorizationViewModel.alertMessage, isPresented: $autorizationViewModel.showAlert) {
-                Button("OK", role: .cancel) {
-                    
-                }
-            }
+
             
             
             .toolbar {
@@ -113,8 +99,24 @@ struct AutorizationView: View {
                     }
                 }
             }
+            
+            
         }
+        .padding(.bottom, keyboardOffset)
+        .onChange(of: isTextFieldFocused) {
+            withAnimation {
+                keyboardOffset = isTextFieldFocused ? 300 : 0
+            }
+        }
+        .animation(.easeInOut, value: keyboardOffset)
         
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
+        .alert(autorizationViewModel.alertMessage, isPresented: $autorizationViewModel.showAlert) {
+            Button("OK", role: .cancel) {
+                
+            }
+        }
         
         
     }
