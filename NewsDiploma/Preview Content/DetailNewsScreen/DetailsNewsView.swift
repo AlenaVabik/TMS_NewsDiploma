@@ -162,8 +162,7 @@ struct DetailsNewsView: View {
         }
         .onAppear() {
             Task {
-                let isSaved = await detailsViewModel.checkArticleInSavedBookmarks(articleId: item.articleId)
-                if isSaved {
+                if await detailsViewModel.checkArticleInSavedBookmarks(articleId: item.articleId) {
                     bookmarkState = .marked
                     print("Статья уже сохранена в закладках.")
                 } else {

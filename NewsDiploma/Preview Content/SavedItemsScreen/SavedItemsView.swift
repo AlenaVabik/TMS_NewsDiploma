@@ -46,9 +46,14 @@ struct SavedItemsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     Task {
-                        await savedViewModel.firebaseManager.logOut()
-                        savedViewModel.alertMessage = "You logged out!"
-                        savedViewModel.showAlert = true
+                        do {
+                            try await savedViewModel.firebaseManager.logOut()
+                            savedViewModel.alertMessage = "You logged out!"
+                            savedViewModel.showAlert = true
+                        } catch {
+                            savedViewModel.alertMessage = "Error: \(error.localizedDescription)"
+                            savedViewModel.showAlert = true
+                        }
                     }
                 }) {
                     HStack{

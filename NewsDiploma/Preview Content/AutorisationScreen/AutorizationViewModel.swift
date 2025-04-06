@@ -14,8 +14,8 @@ final class AutorizationViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     
-    @Published var showAlert = false
-    @Published var alertMessage = ""
+    var showAlert = false
+    var alertMessage = ""
     @Published var isLoading = false
 }
 

@@ -12,10 +12,10 @@ struct AutorizationView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var keyboardOffset: CGFloat = 0
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         VStack {
-            Spacer().frame(height: 20)
             
             Image(systemName: "info.circle.fill")
                 .font(.title)
@@ -24,7 +24,6 @@ struct AutorizationView: View {
             Text("To save an article for later, please sign in or register for an account.")
                 .frame(maxWidth: 300, maxHeight: .infinity)
                 .multilineTextAlignment(.center)
-//                .padding()
                 
             
             TextField("Name", text: $autorizationViewModel.name)
@@ -33,7 +32,7 @@ struct AutorizationView: View {
                 .cornerRadius(10)
                 .padding(.trailing, 15)
                 .padding(.leading, 15)
-
+                .focused($isTextFieldFocused)
             
             TextField("Email", text: $autorizationViewModel.email)
                 .padding(10)
@@ -42,6 +41,7 @@ struct AutorizationView: View {
                 .keyboardType(.emailAddress)
                 .padding(.trailing, 15)
                 .padding(.leading, 15)
+                .focused($isTextFieldFocused)
             
             TextField("Password", text: $autorizationViewModel.password)
                 .padding(10)
@@ -49,16 +49,22 @@ struct AutorizationView: View {
                 .cornerRadius(10)
                 .padding(.trailing, 15)
                 .padding(.leading, 15)
+                .focused($isTextFieldFocused)
             
             Button {
                 autorizationViewModel.isLoading = true
-                autorizationViewModel.firebaseManager.registerUser(name: autorizationViewModel.name, email: autorizationViewModel.email, password: autorizationViewModel.password) { success in
-                    autorizationViewModel.isLoading = false
-                    if success {
+                Task {
+                    do {
+                        try await autorizationViewModel.firebaseManager.registerUser(
+                            name: autorizationViewModel.name,
+                            email: autorizationViewModel.email,
+                            password: autorizationViewModel.password)
+                        autorizationViewModel.isLoading = false
                         dismiss()
-                    } else {
-                        autorizationViewModel.alertMessage = "Register error"
+                    } catch {
+                        autorizationViewModel.isLoading = false
                         autorizationViewModel.showAlert = true
+                        autorizationViewModel.alertMessage = "Register error: \(error.localizedDescription)"
                         print("Ошибка регистрации")
                     }
                 }
@@ -72,16 +78,19 @@ struct AutorizationView: View {
                         .foregroundStyle(.white)
                         .background(Color.black)
                         .padding(.trailing, 15)
-                        .padding(.leading, 15)                }
+                        .padding(.leading, 15)
+                }
             }
             
             
             Button {
-                autorizationViewModel.firebaseManager.loginUser(email: autorizationViewModel.email, password: autorizationViewModel.password) { success in
-                    if success {
-//                        autorizationViewModel.firebaseManager.isUserLoggedIn = true
+                Task {
+                    do {
+                        try await autorizationViewModel.firebaseManager.loginUser(
+                            email: autorizationViewModel.email,
+                            password: autorizationViewModel.password)
                         dismiss()
-                    } else {
+                    } catch {
                         autorizationViewModel.alertMessage = "Login error"
                         autorizationViewModel.showAlert = true
                         print("Ошибка входа")
@@ -98,12 +107,18 @@ struct AutorizationView: View {
                     .padding(.leading, 15)
             }
             
-            Spacer()
             
             .padding(.horizontal, 20)
             .padding(.bottom, keyboardOffset)
+            .onChange(of: isTextFieldFocused) {
+                withAnimation {
+                    keyboardOffset = isTextFieldFocused ? 300 : 0
+                }
+            }
+            .animation(.easeInOut, value: keyboardOffset)
+            
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(Color.gray)
+            
             .alert(autorizationViewModel.alertMessage, isPresented: $autorizationViewModel.showAlert) {
                 Button("OK", role: .cancel) {
                     
@@ -121,34 +136,11 @@ struct AutorizationView: View {
                     }
                 }
             }
-            .onAppear {
-                setupKeyboardListeners()
-            }
-            .onDisappear {
-                removeKeyboardListeners()
-            }
         }
         
         
         
     }
-    
-        private func setupKeyboardListeners() {
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-                if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                    keyboardOffset = keyboardFrame.height
-                }
-            }
-            
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-                keyboardOffset = 0
-            }
-        }
-
-        private func removeKeyboardListeners() {
-            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-        }
 }
 
 #Preview {
