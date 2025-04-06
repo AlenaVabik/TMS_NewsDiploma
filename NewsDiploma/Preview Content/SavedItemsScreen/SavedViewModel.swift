@@ -10,9 +10,9 @@ import FirebaseAuth
 
 final class SavedViewModel: ObservableObject {
     @Published var savedArticles: [SavedArticleModel] = []
-    @Published var firebaseManager = FirebaseManager()
+    private let firebaseManager = FirebaseManager()
     @Published var showAlert = false
-    @Published var alertMessage = ""
+    var alertMessage = ""
     
     func loadSavedArticles() async {
         guard let currentUser = Auth.auth().currentUser else { return }
@@ -35,6 +35,24 @@ final class SavedViewModel: ObservableObject {
             }
         } catch {
             print("Ошибка загрузки новостей: \(error)")
+        }
+    }
+    
+    
+    func logOutAction() {
+        Task {
+            do {
+                try await firebaseManager.logOut()
+                await MainActor.run {
+                    alertMessage = "You logged out!"
+                    showAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    alertMessage = "Error: \(error.localizedDescription)"
+                    showAlert = true
+                }
+            }
         }
     }
 }
