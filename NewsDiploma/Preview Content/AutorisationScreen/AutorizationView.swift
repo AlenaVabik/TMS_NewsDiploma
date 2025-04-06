@@ -13,7 +13,7 @@ struct AutorizationView: View {
 
     @State private var keyboardOffset: CGFloat = 0
     @FocusState private var isTextFieldFocused: Bool
-    
+
     var body: some View {
         VStack {
             
@@ -53,21 +53,8 @@ struct AutorizationView: View {
             
             Button {
                 autorizationViewModel.isLoading = true
-                Task {
-                    do {
-                        try await autorizationViewModel.firebaseManager.registerUser(
-                            name: autorizationViewModel.name,
-                            email: autorizationViewModel.email,
-                            password: autorizationViewModel.password)
-                        autorizationViewModel.isLoading = false
-                        dismiss()
-                    } catch {
-                        autorizationViewModel.isLoading = false
-                        autorizationViewModel.showAlert = true
-                        autorizationViewModel.alertMessage = "Register error: \(error.localizedDescription)"
-                        print("Ошибка регистрации")
-                    }
-                }
+                autorizationViewModel.registerUserAction { dismiss() }
+
             } label: {
                 if autorizationViewModel.isLoading {
                     ProgressView()
@@ -84,18 +71,8 @@ struct AutorizationView: View {
             
             
             Button {
-                Task {
-                    do {
-                        try await autorizationViewModel.firebaseManager.loginUser(
-                            email: autorizationViewModel.email,
-                            password: autorizationViewModel.password)
-                        dismiss()
-                    } catch {
-                        autorizationViewModel.alertMessage = "Login error"
-                        autorizationViewModel.showAlert = true
-                        print("Ошибка входа")
-                    }
-                }
+                autorizationViewModel.loginUserAction { dismiss() }
+
             } label: {
                 Text("Sign in")
                     .padding()
