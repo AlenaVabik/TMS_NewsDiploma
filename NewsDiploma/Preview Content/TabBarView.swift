@@ -26,11 +26,11 @@ struct NewsTabBarView: View {
                 }
             
             NavigationStack {
-                MapContainerView()
+                SavedItemsView()
             }
                 .tabItem {
-                    Image(systemName: "mappin.circle.fill")
-                    Text("Map")
+                    Image(systemName: "bookmark.fill")
+                    Text("Saved Articles")
                 }
         }
     }

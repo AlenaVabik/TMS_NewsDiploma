@@ -24,19 +24,22 @@ struct FirstContentView: View {
     var body: some View {
         VStack {
             Label(viewModel.greeting, systemImage: "newspaper")
-                .font(.custom("AvenirNext-Bold", size: 20))
+                .font(.title2)
                 .padding(.top, 10)
             
             Text(DateFormatter.firstScreenDateFormatter.string(from: Date()))
-                 .font(.caption)
-                 .foregroundColor(.white)
+                .font(.callout)
+                .foregroundColor(.black.opacity(0.5))
             
             TabView(selection: $viewModel.selectedCategory) {
                 ForEach(Category.allCases, id: \.self) { category in
                     VStack {
                         Text(category.rawValue.capitalized)
                             .font(.headline)
-                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: 27)
+                            .border(Color.black, width: 1)
+
+                        Divider()
                         List(viewModel.items, id: \.articleId) { item in
                             NavigationLink(
                                 destination: DetailsNewsView(
@@ -51,25 +54,15 @@ struct FirstContentView: View {
                             }
                         }
                         
-                        .scrollContentBackground(.hidden)
-                        .background(Color.secondary)
+                        .scrollContentBackground(.visible)
                     }
                     .tag(category)
                 }
            }
             .tabViewStyle(.page)
             .indexViewStyle(.page(backgroundDisplayMode: .always))
-
-//            Button("Push button") {
-//                viewModel.isSheetPresented = true
-//            }
-//            .padding(5)
-//            .sheet(isPresented: $viewModel.isSheetPresented) {
-//                SecondContentView()
-//            }
         }
-        .background(Color.red)
-        .padding()
+        .background(Color.white)
         .task {
             await viewModel.loadNews()
         }

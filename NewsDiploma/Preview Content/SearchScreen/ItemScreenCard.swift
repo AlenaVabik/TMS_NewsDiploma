@@ -47,7 +47,7 @@ struct ItemScreenCard: View {
 
         }
         .padding()
-        .background(Color.brown)
+        .background(Color.white)
         Divider()
     }
 }

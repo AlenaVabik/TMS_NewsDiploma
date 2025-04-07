@@ -27,7 +27,7 @@ struct SearchView: View {
             }
             
             .scrollContentBackground(.hidden)
-            .background(Color.brown.opacity(0.5))
+            .background(Color.white)
             .navigationTitle("Search by key word")
             .searchable(text: $searchViewModel.keyWord, prompt: "Search for articles")
             .onChange(of: searchViewModel.keyWord) { oldValue, newValue in
