@@ -37,7 +37,10 @@ struct FirstContentView: View {
                         Text(category.rawValue.capitalized)
                             .font(.headline)
                             .frame(maxWidth: .infinity, maxHeight: 27)
+                            .background(Color.black.opacity(0.95))
+                            .foregroundStyle(.white)
                             .border(Color.black, width: 1)
+                            
 
                         Divider()
                         List(viewModel.items, id: \.articleId) { item in
