@@ -118,8 +118,8 @@ struct DetailsNewsView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    detailsViewModel.removeOrSaveArticleAction(bookmarkState: bookmarkState) { newState in
-                        bookmarkState = newState
+                    Task {
+                        bookmarkState = await detailsViewModel.removeOrSaveArticleAction(currentState: bookmarkState)
                     }
                 }) {
                     Image(systemName: bookmarkState.rawValue)
@@ -144,13 +144,11 @@ struct DetailsNewsView: View {
                 
             }
         }
-        .onAppear() {
-            detailsViewModel.checkBookmarkAction(bookmarkState: bookmarkState) { newState in
-                bookmarkState = newState
-            }
-//            в зависимости от результата закрасить кнопку
-        }
         
+        .task {
+            bookmarkState = await detailsViewModel.checkBookmarkAction()
+        }
+ 
     }
 }
 
