@@ -42,15 +42,14 @@ struct AutorizationView: View {
                 .padding(.leading, 15)
                 .focused($isTextFieldFocused)
             
-            TextField("Password", text: $autorizationViewModel.password)
+            SecureField("Password", text: $autorizationViewModel.password)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.trailing, 15)
                 .padding(.leading, 15)
                 .focused($isTextFieldFocused)
-            
-            
+                
             
             Button {
                 autorizationViewModel.isLoading = true
