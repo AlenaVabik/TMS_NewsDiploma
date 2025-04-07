@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 final class TestData {
     static let modelArray = [
@@ -310,6 +311,8 @@ final class TestData {
         translatedDescription: "",
         translatedTitle: "aits"
     )
+    
+    static let detailViewModel = DetailsViewModel(item: TestData.articleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>())
     
 //    static let articleModel = DetailsViewModel(item: TestData.modelArray, translatedArticleId: TestData.modelArray.)
 

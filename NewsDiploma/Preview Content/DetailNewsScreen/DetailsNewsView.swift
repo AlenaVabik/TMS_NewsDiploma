@@ -9,11 +9,17 @@ import SwiftUI
 import Kingfisher
 import Combine
 
+enum BookmarkState: String {
+    case unmarked = "bookmark"
+    case marked = "bookmark.fill"
+}
+
 struct DetailsNewsView: View {
     @StateObject private var detailsViewModel: DetailsViewModel
-    let item: ArticleModel
-    @State private var showBlur = false
-    
+    var item: ArticleModel
+        
+    @State private var bookmarkState: BookmarkState = .unmarked
+
     init(detailsViewModel: DetailsViewModel, item: ArticleModel) {
         _detailsViewModel = StateObject(wrappedValue: detailsViewModel)
         self.item = item
@@ -24,6 +30,7 @@ struct DetailsNewsView: View {
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
+                    
                     Text(detailsViewModel.isTranslated
                          ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
                          : item.title)
@@ -45,14 +52,16 @@ struct DetailsNewsView: View {
                             .foregroundColor(.gray)
                     }
                     
+                    
                     Text(detailsViewModel.isTranslated
                          ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
                          : (item.description ?? "No description"))
                     .padding(.top, 10)
                     
+                    
+                    
                     Button(action: {
-                        detailsViewModel.isfullScreenPresented = true
-                        
+                        detailsViewModel.isSourceViewPresented = true
                         print("Кнопка 'Source information' нажата.")
                     }) {
                         Text("Source information")
@@ -64,31 +73,31 @@ struct DetailsNewsView: View {
                             .cornerRadius(10)
                     }
                 }
-                .blur(radius: showBlur ? 10 : 0)
-                .animation(.easeInOut, value: showBlur)
+                .blur(radius: detailsViewModel.showBlur ? 10 : 0)
+                .animation(.easeInOut, value: detailsViewModel.showBlur)
                 
-                // Опционально: затемнение
-                if showBlur {
+                if detailsViewModel.showBlur {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()
                 }
             }
-            .sheet(isPresented: $detailsViewModel.isfullScreenPresented, onDismiss: {
-                showBlur = false
+            .sheet(isPresented: $detailsViewModel.isSourceViewPresented, onDismiss: {
+                detailsViewModel.showBlur = false
             }) {
                 NavigationStack {
                     SourceView(articleModel: item)
                         .presentationDetents([.large, .medium])
                         .interactiveDismissDisabled()
                         .onAppear {
-                            showBlur = true
+                            detailsViewModel.showBlur = true
                         }
                 }
             }
 
             .padding(.horizontal)
         }
-        .navigationTitle("Details")
+        
+        
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
@@ -106,15 +115,45 @@ struct DetailsNewsView: View {
                         .foregroundColor(.red)
                 }
             }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    Task {
+                        bookmarkState = await detailsViewModel.removeOrSaveArticleAction(currentState: bookmarkState)
+                    }
+                }) {
+                    Image(systemName: bookmarkState.rawValue)
+                        .font(.title2)
+                        .foregroundColor(bookmarkState == .marked ? .yellow : .gray)
+                }
+            }
         }
+        .sheet(isPresented: $detailsViewModel.isAutorisationViewPresented, onDismiss: {
+            detailsViewModel.showBlur = false
+        }) {
+            NavigationStack {
+                AutorizationView()
+                    .interactiveDismissDisabled()
+                    .onAppear {
+                        detailsViewModel.showBlur = true
+                    }
+            }
+        }
+        .alert(detailsViewModel.alertMessage, isPresented: $detailsViewModel.showAlert) {
+            Button("OK", role: .cancel) {
+                
+            }
+        }
+        
+        .task {
+            bookmarkState = await detailsViewModel.checkBookmarkAction()
+        }
+ 
     }
 }
 
 #Preview {
-//    let viewModel = ViewModel()
-//
-//    if ProcessInfo.isPreviewMode {
-//        viewModel.items = TestData.modelArray
-//    }
-//    DetailsNewsView(detailsViewModel: TestData.articleModel, item: TestData.articleModel)
+    NavigationStack {
+        DetailsNewsView(detailsViewModel: TestData.detailViewModel, item: TestData.articleModel)
+    }
 }

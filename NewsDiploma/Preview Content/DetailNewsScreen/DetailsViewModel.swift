@@ -6,16 +6,29 @@
 //
 import SwiftUI
 import Combine
+import Firebase
+import FirebaseAuth
 
 final class DetailsViewModel: ObservableObject {
     var item: ArticleModel
     var translatedArticleId: PassthroughSubject<ArticleModel, Never>
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var isfullScreenPresented: Bool = false
+    @Published var isSourceViewPresented: Bool = false
     @Published var translatedTitle: String?
     @Published var translatedDescription: String?
     @Published var isTranslated: Bool = false
+    
+    @Published var isAutorisationViewPresented: Bool = false
+
+    @Published var showBlur = false
+    
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    
+    private let firebaseManager = FirebaseManager()
+    
+//    @Published var bookmarkState: BookmarkState = .unmarked
     
     init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
         self.item = item
@@ -63,6 +76,56 @@ final class DetailsViewModel: ObservableObject {
     func toggleTranslation() {
         isTranslated.toggle()
     }
+    
+    func removeOrSaveArticleAction(currentState: BookmarkState) async -> BookmarkState {
+        if firebaseManager.isUserLoggedIn() {
+            if currentState == .marked {
+                await firebaseManager.removeArticleFromBookmarks(articleId: item.articleId)
+                await MainActor.run {
+                    alertMessage = "Removed from bookmarks"
+                    showAlert = true
+                }
+                return .unmarked
+            } else {
+                do {
+                    try await
+                    firebaseManager.saveArticle(article: item)
+                    await MainActor.run {
+                        alertMessage = "Saved to bookmarks!"
+                        showAlert = true
+                    }
+                    return .marked
+                } catch {
+                    await MainActor.run {
+                        alertMessage = "Saving error: \(error.localizedDescription)"
+                        showAlert = true
+                    }
+                    return currentState
+                }
+            }
+            //            если она горит то по нажатию удалить из закладок,а если не горит то сохранить
+        } else {
+            await MainActor.run {
+                isAutorisationViewPresented = true
+            }
+            return currentState
+        }
+    }
+
+
+    func checkBookmarkAction() async -> BookmarkState {
+        let isBookmarked = await firebaseManager.checkArticleInSavedBookmarks(articleId: item.articleId)
+        
+        if isBookmarked {
+            print("Статья уже сохранена в закладках.")
+            return .marked
+        } else {
+            print("Статья не найдена в закладках.")
+            return .unmarked
+        }
+    }
+
+
 }
 
 

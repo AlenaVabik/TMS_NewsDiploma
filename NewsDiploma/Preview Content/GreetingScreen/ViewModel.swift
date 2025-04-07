@@ -18,7 +18,7 @@ final class ViewModel: ObservableObject {
     @Published var shouldReload: Bool = true
 
 //экземпляр
-    @Published var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
+    var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
     
     private var cancellables: Set<AnyCancellable> = []
          
@@ -78,7 +78,9 @@ final class ViewModel: ObservableObject {
     
     func loadNews() async {
         guard shouldReload else { return }
-        shouldReload = false
+        await MainActor.run {
+            shouldReload = false
+        }
         guard !ProcessInfo.isPreviewMode else { return }
         do {
             let response: APIResponseModel = try await APIManager.sendRequest(
