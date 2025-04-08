@@ -23,11 +23,11 @@ struct SavedItemsView: View {
                         .foregroundColor(.gray)
                 } else {
                     List(savedViewModel.savedArticles, id: \.title) { article in
-                        HStack {
+                        VStack {
                             if let url = URL(string: article.image) {
                                 KFImage(url)
                                     .resizable()
-                                    .frame(width: 50, height: 50)
+                                    .scaledToFit()
                                     .cornerRadius(5)
                             }
                             VStack(alignment: .leading) {
@@ -50,7 +50,7 @@ struct SavedItemsView: View {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                         }
                         .padding(10)
-                        .background(Color.red.opacity(0.2))
+                        .font(.callout)
                         .cornerRadius(10)
                         .foregroundColor(.red)
                     }
