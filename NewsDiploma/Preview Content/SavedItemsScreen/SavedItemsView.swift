@@ -22,23 +22,20 @@ struct SavedItemsView: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                 } else {
-                    List(savedViewModel.savedArticles, id: \.title) { article in
-                        VStack {
-                            if let url = URL(string: article.image) {
-                                KFImage(url)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .cornerRadius(5)
-                            }
-                            VStack(alignment: .leading) {
-                                Text(article.title)
-                                    .font(.headline)
-                                Text(article.description)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
+                    List(savedViewModel.savedArticles, id: \.articleId) { item in
+                        NavigationLink(
+                            destination: DetailsNewsView(
+                                detailsViewModel: DetailsViewModel(
+                                    item: item
+                                ),
+                                item: item
+                            )
+                        ) {
+                            ItemCard(item: item)
                         }
                     }
+                    
+                    .scrollContentBackground(.visible)
                 }
             }
             .navigationTitle("Saved")

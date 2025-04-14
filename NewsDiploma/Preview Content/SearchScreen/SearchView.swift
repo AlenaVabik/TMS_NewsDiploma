@@ -16,8 +16,7 @@ struct SearchView: View {
                 NavigationLink(
                     destination: DetailsNewsView(
                         detailsViewModel: DetailsViewModel(
-                            item: item,
-                            translatedArticleId: searchViewModel.translatedArticleId
+                            item: item
                         ),
                         item: item
                     )

@@ -5,19 +5,20 @@
 //  Created by Alena  on 17.03.25.
 //
 import SwiftUI
-import Combine
 import Firebase
 import FirebaseAuth
 
 final class DetailsViewModel: ObservableObject {
     var item: ArticleModel
-    var translatedArticleId: PassthroughSubject<ArticleModel, Never>
-    private var cancellables = Set<AnyCancellable>()
+
     
     @Published var isSourceViewPresented: Bool = false
-    @Published var translatedTitle: String?
-    @Published var translatedDescription: String?
-    @Published var isTranslated: Bool = false
+    
+    var translatedTitle: String?
+    var translatedDescription: String?
+    var isTranslated: Bool = false
+
+    @Published var showTranslation: Bool = false
     
     @Published var isAutorisationViewPresented: Bool = false
 
@@ -28,16 +29,9 @@ final class DetailsViewModel: ObservableObject {
     
     private let firebaseManager = FirebaseManager()
     
-//    @Published var bookmarkState: BookmarkState = .unmarked
     
-    init(item: ArticleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>) {
+    init(item: ArticleModel) {
         self.item = item
-        self.translatedArticleId = translatedArticleId
-        translatedArticleId
-            .sink { [weak self] article in
-                self?.item = article
-            }
-            .store(in: &cancellables)
     }
     
     private func translateText(_ text: String) async throws -> String? {
@@ -50,6 +44,12 @@ final class DetailsViewModel: ObservableObject {
     
     func translateContent() async {
         guard !ProcessInfo.isPreviewMode else { return }
+        guard !self.isTranslated else {
+            await MainActor.run {
+                self.showTranslation = true
+            }
+            return
+        }
         do {
             let translatedTitle = try await translateText(item.title)
             
@@ -66,6 +66,7 @@ final class DetailsViewModel: ObservableObject {
             
             await MainActor.run {
                 self.translatedTitle = translatedTitle
+                self.showTranslation = true
                 self.isTranslated = true
             }
         } catch { print("Ошибка перевода: \(error.localizedDescription)") }
@@ -74,7 +75,7 @@ final class DetailsViewModel: ObservableObject {
 
 //    переключатель
     func toggleTranslation() {
-        isTranslated.toggle()
+        showTranslation.toggle()
     }
     
     func removeOrSaveArticleAction(currentState: BookmarkState) async -> BookmarkState {

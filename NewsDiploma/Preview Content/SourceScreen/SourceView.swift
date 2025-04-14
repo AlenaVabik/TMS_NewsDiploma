@@ -34,7 +34,7 @@ struct SourceView: View {
                 .font(.title)
                 .fontWeight(.bold)
             
-            if let url = URL(string: articleModel.sourceUrl) {
+            if let url = URL(string: articleModel.link) {
                 Link("Go to source link", destination: url)
                     .font(.headline)
                     .foregroundColor(.blue)

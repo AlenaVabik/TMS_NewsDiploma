@@ -47,8 +47,7 @@ struct FirstContentView: View {
                             NavigationLink(
                                 destination: DetailsNewsView(
                                     detailsViewModel: DetailsViewModel(
-                                        item: item,
-                                        translatedArticleId: viewModel.translatedArticleId
+                                        item: item
                                     ),
                                     item: item
                                 )
