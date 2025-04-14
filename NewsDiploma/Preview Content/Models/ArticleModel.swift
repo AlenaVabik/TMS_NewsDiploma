@@ -25,19 +25,17 @@ struct ArticleModel: Decodable {
     let description: String?
     let content: String?
     let pubDate: Date?
-    let pubDateTZ: String
+    let pubDateTZ: String?
     let imageUrl: String?
     let sourceId: String
     let sourcePriority: Int
     let sourceName: String
     let sourceUrl: String
     let sourceIcon: String
-    let language: String
+    let language: String?
     let country: [String]
     let category: [String]
-    
-    let translatedDescription: String?
-    let translatedTitle: String?
+
 
     
     enum CodingKeys: String, CodingKey {
@@ -82,8 +80,7 @@ struct ArticleModel: Decodable {
         self.language = try container.decode(String.self, forKey: ArticleModel.CodingKeys.language)
         self.country = try container.decode([String].self, forKey: ArticleModel.CodingKeys.country)
         self.category = try container.decode([String].self, forKey: ArticleModel.CodingKeys.category)
-        self.translatedTitle = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.translatedTitle)
-        self.translatedDescription = try container.decodeIfPresent(String.self, forKey: ArticleModel.CodingKeys.translatedDescription)
+
     }
     
     init(
@@ -105,9 +102,7 @@ struct ArticleModel: Decodable {
             sourceIcon: String,
             language: String,
             country: [String],
-            category: [String],
-            translatedDescription: String?,
-            translatedTitle: String?
+            category: [String]
         ) {
             self.articleId = articleId
             self.title = title
@@ -128,7 +123,6 @@ struct ArticleModel: Decodable {
             self.language = language
             self.country = country
             self.category = category
-            self.translatedDescription = translatedDescription
-            self.translatedTitle = translatedTitle
+
         }
 }

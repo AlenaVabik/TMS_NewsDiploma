@@ -97,7 +97,25 @@ final class FirebaseManager: ObservableObject {
                 .setData([
                     "title": article.title,
                     "description": article.description ?? "",
-                    "imageUrl": article.imageUrl ?? ""
+                    "imageUrl": article.imageUrl ?? "",
+                    "articleId": article.articleId,
+                    "link": article.link,
+                    "keywords": article.keywords ?? "",
+                    "creator": article.creator ?? "",
+                    "videoUrl": article.videoUrl ?? "",
+                    "content": article.content ?? "",
+                    "pubDate": article.pubDate ?? Date(),
+//                    "pubDateTZ": article.pubDateTZ,
+                    "sourceId": article.sourceId,
+                    "sourcePriority": article.sourcePriority,
+                    "sourceName": article.sourceName,
+                    "sourceUrl": article.sourceUrl,
+                    "sourceIcon": article.sourceIcon,
+//                    "language": article.language,
+//                    "country": article.country,
+//                    "category": article.category,
+//                    "translatedDescription": article.translatedDescription ?? "",
+//                    "translatedTitle": article.translatedTitle ?? ""
                 ])
             print("Article saved successfully!")
         } catch {

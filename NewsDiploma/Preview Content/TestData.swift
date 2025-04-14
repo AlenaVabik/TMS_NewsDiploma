@@ -29,9 +29,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест1"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест1"]
                 ),
                 ArticleModel(
                     articleId: "567",
@@ -52,9 +50,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест2"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест2"]
                 ),
                 ArticleModel(
                     articleId: "891",
@@ -75,9 +71,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест3"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест3"]
                 ),
                 ArticleModel(
                     articleId: "111",
@@ -98,9 +92,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест4"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест4"]
                 ),
                 ArticleModel(
                     articleId: "333",
@@ -121,9 +113,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест5"]
                 ),
                 ArticleModel(
                     articleId: "343",
@@ -144,9 +134,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест5"]
                 ),
                 ArticleModel(
                     articleId: "123",
@@ -167,9 +155,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест1"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест1"]
                 ),
                 ArticleModel(
                     articleId: "567",
@@ -190,9 +176,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест2"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест2"]
                 ),
                 ArticleModel(
                     articleId: "891",
@@ -213,9 +197,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест3"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест3"]
                 ),
                 ArticleModel(
                     articleId: "111",
@@ -236,9 +218,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест4"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест4"]
                 ),
                 ArticleModel(
                     articleId: "333",
@@ -259,9 +239,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест5"]
                 ),
                 ArticleModel(
                     articleId: "343",
@@ -282,9 +260,7 @@ final class TestData {
                     sourceIcon: "",
                     language: "ru",
                     country: ["BY"],
-                    category: ["Тест5"],
-                    translatedDescription: "",
-                    translatedTitle: "aits"
+                    category: ["Тест5"]
                 )
             ]
     
@@ -307,14 +283,10 @@ final class TestData {
         sourceIcon: "",
         language: "ru",
         country: ["BY"],
-        category: ["Тест5"],
-        translatedDescription: "",
-        translatedTitle: "aits"
+        category: ["Тест5"]
     )
     
-    static let detailViewModel = DetailsViewModel(item: TestData.articleModel, translatedArticleId: PassthroughSubject<ArticleModel, Never>())
-    
-//    static let articleModel = DetailsViewModel(item: TestData.modelArray, translatedArticleId: TestData.modelArray.)
+    static let detailViewModel = DetailsViewModel(item: TestData.articleModel)
 
 }
 

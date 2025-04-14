@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Kingfisher
-import Combine
 
 enum BookmarkState: String {
     case unmarked = "bookmark"
@@ -31,7 +30,7 @@ struct DetailsNewsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     
-                    Text(detailsViewModel.isTranslated
+                    Text(detailsViewModel.showTranslation
                          ? (detailsViewModel.translatedTitle ?? "Перевод недоступен")
                          : item.title)
                     .font(.title)
@@ -53,7 +52,7 @@ struct DetailsNewsView: View {
                     }
                     
                     
-                    Text(detailsViewModel.isTranslated
+                    Text(detailsViewModel.showTranslation
                          ? (detailsViewModel.translatedDescription ?? "Перевод недоступен")
                          : (item.description ?? "No description"))
                     .padding(.top, 10)
@@ -102,7 +101,7 @@ struct DetailsNewsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     Task {
-                        if detailsViewModel.isTranslated {
+                        if detailsViewModel.showTranslation {
                             detailsViewModel.toggleTranslation()
                             // возврат на оригинал
                         } else {

@@ -17,8 +17,6 @@ final class ViewModel: ObservableObject {
     
     @Published var shouldReload: Bool = true
 
-//экземпляр
-    var translatedArticleId = PassthroughSubject<ArticleModel, Never>()
     
     private var cancellables: Set<AnyCancellable> = []
          
@@ -52,13 +50,11 @@ final class ViewModel: ObservableObject {
             sourceIcon: "https://example.com/icon.png",
             language: "en",
             country: ["US"],
-            category: ["General"],
-            translatedDescription: "",
-            translatedTitle: ""
+            category: ["General"]
         )
-        let placeholderSubject = PassthroughSubject<ArticleModel, Never>()
-        self.detVM = DetailsViewModel(item: placeholderItem, translatedArticleId: placeholderSubject)
-        
+
+        self.detVM = DetailsViewModel(item: placeholderItem)
+
         $selectedCategory
             .receive(on: DispatchQueue.main)
             .sink { [weak self] category in
